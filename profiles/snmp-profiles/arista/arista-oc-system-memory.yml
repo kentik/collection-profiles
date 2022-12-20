@@ -1,0 +1,40 @@
+# file: arista-oc-system-memory.yml
+# SNMP: HOST-RESOURCES-MIB::hrStorageTable
+# OC: /system/memory
+# Kentik-path: /system/memory
+---
+
+metrics:
+
+# This is a single memory info
+# OC paths for memory, no path for utilization
+# oc-path: openconfig-system:/system/memory/state/physical
+# oc-path: openconfig-system:/system/memory/state/reserved
+# oc-path: openconfig-system:/system/memory/state/used
+# oc-path: openconfig-system:/system/memory/state/free
+# On Arista, always index 100 for aggregated info
+  - MIB: "/system"
+    table:
+      OID: 1.3.6.1.4.1.999999.30065.4
+      name: "memory"
+    symbols:
+      - tag: oc-memory:used
+        OID: 1.3.6.1.2.1.25.2.3.1.6.100
+        name: hrStorageUsed
+
+      - tag: oc-memory:physical
+        OID: 1.3.6.1.2.1.25.2.3.1.5.100
+        name: hrStorageSize
+
+      - tag: oc-memory:memory-units
+        OID: 1.3.6.1.2.1.25.2.3.1.4.100
+        name: hrStorageAllocationUnits
+        script: |
+          load('math.star', 'math')
+          def main(n):
+            memory_units = int(n.pop("oc-memory:memory-units"))
+            n["oc-memory:used"] = int(n["oc-memory:used"]) * memory_units
+            n["oc-memory:physical"] = int(n["oc-memory:physical"]) * memory_units
+            n["oc-memory:free"] = n["oc-memory:physical"] - n["oc-memory:used"]
+            n["oc-memory:utilization"] = int(float(100) * float(n["oc-memory:used"]) / float(n["oc-memory:physical"])) 
+            return None

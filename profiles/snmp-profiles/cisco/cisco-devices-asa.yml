@@ -1,0 +1,266 @@
+# http://oid-info.com/get/1.3.6.1.4.1.9.9.147
+# http://oid-info.com/get/1.3.6.1.4.1.9.9.171
+# http://oid-info.com/get/1.3.6.1.4.1.9.9.392
+# http://oid-info.com/get/1.3.6.1.2.1.99.1.1
+---
+extends:
+  - cisco-devices-all.yml
+
+provider: kentik-firewall
+
+sysobjectid:
+  - 1.3.6.1.4.1.9.1.669     #  Cisco ASA 5510
+  - 1.3.6.1.4.1.9.1.670     #  Cisco ASA 5520
+  - 1.3.6.1.4.1.9.1.671     #  Cisco ASA 5520sc
+  - 1.3.6.1.4.1.9.1.672     #  Cisco ASA 5540
+  - 1.3.6.1.4.1.9.1.673     #  Cisco ASA 5540sc
+  - 1.3.6.1.4.1.9.1.745     #  Cisco ASA 5505
+  - 1.3.6.1.4.1.9.1.753     #  Cisco ASA 5550
+  - 1.3.6.1.4.1.9.1.763     #  Cisco ASA 5550sc
+  - 1.3.6.1.4.1.9.1.764     #  Cisco ASA 5520sy
+  - 1.3.6.1.4.1.9.1.765     #  Cisco ASA 5540sy
+  - 1.3.6.1.4.1.9.1.766     #  Cisco ASA 5550sy
+  - 1.3.6.1.4.1.9.1.773     #  Cisco ASA 5510sc
+  - 1.3.6.1.4.1.9.1.774     #  Cisco ASA 5510sy
+  - 1.3.6.1.4.1.9.1.914     #  Cisco ASA 5580
+  - 1.3.6.1.4.1.9.1.915     #  Cisco ASA 5580sc
+  - 1.3.6.1.4.1.9.1.916     #  Cisco ASA 5580sy
+  - 1.3.6.1.4.1.9.1.1101    #  Cisco 5505W ASA
+  - 1.3.6.1.4.1.9.1.1194    #  Cisco ASA 5585Ssp10
+  - 1.3.6.1.4.1.9.1.1195    #  Cisco ASA 5585Ssp20
+  - 1.3.6.1.4.1.9.1.1196    #  Cisco ASA 5585Ssp40
+  - 1.3.6.1.4.1.9.1.1197    #  Cisco ASA 5585Ssp60
+  - 1.3.6.1.4.1.9.1.1198    #  Cisco ASA 5585Ssp10sc
+  - 1.3.6.1.4.1.9.1.1199    #  Cisco ASA 5585Ssp20sc
+  - 1.3.6.1.4.1.9.1.1200    #  Cisco ASA 5585Ssp40sc
+  - 1.3.6.1.4.1.9.1.1201    #  Cisco ASA 5585Ssp60sc
+  - 1.3.6.1.4.1.9.1.1202    #  Cisco ASA 5585Ssp10sy
+  - 1.3.6.1.4.1.9.1.1203    #  Cisco ASA 5585Ssp20sy
+  - 1.3.6.1.4.1.9.1.1204    #  Cisco ASA 5585Ssp40sy
+  - 1.3.6.1.4.1.9.1.1205    #  Cisco ASA 5585Ssp60sy
+  - 1.3.6.1.4.1.9.1.1232    #  Cisco ASA 5585SspIps10
+  - 1.3.6.1.4.1.9.1.1233    #  Cisco ASA 5585SspIps20
+  - 1.3.6.1.4.1.9.1.1234    #  Cisco ASA 5585SspIps40
+  - 1.3.6.1.4.1.9.1.1235    #  Cisco ASA 5585SspIps60
+  - 1.3.6.1.4.1.9.1.1275    #  Cisco ASA Sm1sc
+  - 1.3.6.1.4.1.9.1.1276    #  Cisco ASA Sm1sy
+  - 1.3.6.1.4.1.9.1.1277    #  Cisco ASA Sm1
+  - 1.3.6.1.4.1.9.1.1302    #  Cisco ASA 5585Ssp10K7
+  - 1.3.6.1.4.1.9.1.1303    #  Cisco ASA 5585Ssp20K7
+  - 1.3.6.1.4.1.9.1.1304    #  Cisco ASA 5585Ssp40K7
+  - 1.3.6.1.4.1.9.1.1305    #  Cisco ASA 5585Ssp60K7
+  - 1.3.6.1.4.1.9.1.1306    #  Cisco ASA 5585Ssp10K7sc
+  - 1.3.6.1.4.1.9.1.1307    #  Cisco ASA 5585Ssp20K7sc
+  - 1.3.6.1.4.1.9.1.1308    #  Cisco ASA 5585Ssp40K7sc
+  - 1.3.6.1.4.1.9.1.1309    #  Cisco ASA 5585Ssp60K7sc
+  - 1.3.6.1.4.1.9.1.1310    #  Cisco ASA 5585Ssp10K7sy
+  - 1.3.6.1.4.1.9.1.1311    #  Cisco ASA 5585Ssp20K7sy
+  - 1.3.6.1.4.1.9.1.1312    #  Cisco ASA 5585Ssp40K7sy
+  - 1.3.6.1.4.1.9.1.1313    #  Cisco ASA 5585Ssp60K7sy
+  - 1.3.6.1.4.1.9.1.1323    #  Cisco ASA 5585SspIps10K7
+  - 1.3.6.1.4.1.9.1.1324    #  Cisco ASA 5585SspIps20K7
+  - 1.3.6.1.4.1.9.1.1325    #  Cisco ASA 5585SspIps40K7
+  - 1.3.6.1.4.1.9.1.1326    #  Cisco ASA 5585SspIps60K7
+  - 1.3.6.1.4.1.9.1.1334    #  Cisco ASA Sm1K7sc
+  - 1.3.6.1.4.1.9.1.1335    #  Cisco ASA Sm1K7sy
+  - 1.3.6.1.4.1.9.1.1336    #  Cisco ASA Sm1K7
+  - 1.3.6.1.4.1.9.1.1407    #  Cisco ASA 5512
+  - 1.3.6.1.4.1.9.1.1408    #  Cisco ASA 5525
+  - 1.3.6.1.4.1.9.1.1409    #  Cisco ASA 5545
+  - 1.3.6.1.4.1.9.1.1410    #  Cisco ASA 5555
+  - 1.3.6.1.4.1.9.1.1411    #  Cisco ASA 5512sc
+  - 1.3.6.1.4.1.9.1.1412    #  Cisco ASA 5525sc
+  - 1.3.6.1.4.1.9.1.1413    #  Cisco ASA 5545sc
+  - 1.3.6.1.4.1.9.1.1414    #  Cisco ASA 5555sc
+  - 1.3.6.1.4.1.9.1.1415    #  Cisco ASA 5512sy
+  - 1.3.6.1.4.1.9.1.1416    #  Cisco ASA 5515sy
+  - 1.3.6.1.4.1.9.1.1417    #  Cisco ASA 5525sy
+  - 1.3.6.1.4.1.9.1.1418    #  Cisco ASA 5545sy
+  - 1.3.6.1.4.1.9.1.1419    #  Cisco ASA 5555sy
+  - 1.3.6.1.4.1.9.1.1420    #  Cisco ASA 5515sc
+  - 1.3.6.1.4.1.9.1.1421    #  Cisco ASA 5515
+  - 1.3.6.1.4.1.9.1.1437    #  Cisco ASA 5585SspIps10Virtual
+  - 1.3.6.1.4.1.9.1.1438    #  Cisco ASA 5585SspIps20Virtual
+  - 1.3.6.1.4.1.9.1.1439    #  Cisco ASA 5585SspIps40Virtual
+  - 1.3.6.1.4.1.9.1.1440    #  Cisco ASA 5585SspIps60Virtual
+  - 1.3.6.1.4.1.9.1.1442    #  Cisco ASA 5512K7
+  - 1.3.6.1.4.1.9.1.1443    #  Cisco ASA 5515K7
+  - 1.3.6.1.4.1.9.1.1444    #  Cisco ASA 5525K7
+  - 1.3.6.1.4.1.9.1.1445    #  Cisco ASA 5545K7
+  - 1.3.6.1.4.1.9.1.1446    #  Cisco ASA 5555K7
+  - 1.3.6.1.4.1.9.1.1447    #  Cisco ASA 5512K7sc
+  - 1.3.6.1.4.1.9.1.1448    #  Cisco ASA 5515K7sc
+  - 1.3.6.1.4.1.9.1.1449    #  Cisco ASA 5525K7sc
+  - 1.3.6.1.4.1.9.1.1450    #  Cisco ASA 5545K7sc
+  - 1.3.6.1.4.1.9.1.1451    #  Cisco ASA 5555K7sc
+  - 1.3.6.1.4.1.9.1.1452    #  Cisco ASA 5512K7sy
+  - 1.3.6.1.4.1.9.1.1453    #  Cisco ASA 5515K7sy
+  - 1.3.6.1.4.1.9.1.1454    #  Cisco ASA 5525K7sy
+  - 1.3.6.1.4.1.9.1.1455    #  Cisco ASA 5545K7sy
+  - 1.3.6.1.4.1.9.1.1456    #  Cisco ASA 5555K7sy
+  - 1.3.6.1.4.1.9.1.1610    #  Cisco ASA 5585Nm20x1GE
+  - 1.3.6.1.4.1.9.1.1612    #  Cisco ASA 1000Vsy
+  - 1.3.6.1.4.1.9.1.1613    #  Cisco ASA 1000Vsc
+  - 1.3.6.1.4.1.9.1.1614    #  Cisco ASA 1000V
+  - 1.3.6.1.4.1.9.1.1617    #  Cisco ASA 5585Nm8x10GE
+  - 1.3.6.1.4.1.9.1.1618    #  Cisco ASA 5585Nm4x10GE
+  - 1.3.6.1.4.1.9.1.2114    #  Cisco ASA 5506
+  - 1.3.6.1.4.1.9.1.2115    #  Cisco ASA 5506sc
+  - 1.3.6.1.4.1.9.1.2116    #  Cisco ASA 5506sy
+  - 1.3.6.1.4.1.9.1.2117    #  Cisco ASA 5506W
+  - 1.3.6.1.4.1.9.1.2118    #  Cisco ASA 5506Wsc
+  - 1.3.6.1.4.1.9.1.2119    #  Cisco ASA 5506Wsy
+  - 1.3.6.1.4.1.9.1.2120    #  Cisco ASA 5508
+  - 1.3.6.1.4.1.9.1.2121    #  Cisco ASA 5508sc
+  - 1.3.6.1.4.1.9.1.2122    #  Cisco ASA 5508sy
+  - 1.3.6.1.4.1.9.1.2123    #  Cisco ASA 5506K7
+  - 1.3.6.1.4.1.9.1.2124    #  Cisco ASA 5506K7sc
+  - 1.3.6.1.4.1.9.1.2125    #  Cisco ASA 5506K7sy
+  - 1.3.6.1.4.1.9.1.2126    #  Cisco ASA 5508K7
+  - 1.3.6.1.4.1.9.1.2127    #  Cisco ASA 5508K7sc
+  - 1.3.6.1.4.1.9.1.2128    #  Cisco ASA 5508K7sy
+  - 1.3.6.1.4.1.9.1.2241    #  Cisco ASA 5506H
+  - 1.3.6.1.4.1.9.1.2242    #  Cisco ASA 5516
+  - 1.3.6.1.4.1.9.1.2243    #  Cisco ASA 5506Hsc
+  - 1.3.6.1.4.1.9.1.2244    #  Cisco ASA 5516sc
+  - 1.3.6.1.4.1.9.1.2245    #  Cisco ASA 5506Hsy
+  - 1.3.6.1.4.1.9.1.2246    #  Cisco ASA 5516sy
+  - 1.3.6.1.4.1.9.1.2297    #  Cisco ASA 5512td
+  - 1.3.6.1.4.1.9.1.2298    #  Cisco ASA 5515td
+  - 1.3.6.1.4.1.9.1.2299    #  Cisco ASA 5525td
+  - 1.3.6.1.4.1.9.1.2300    #  Cisco ASA 5545td
+  - 1.3.6.1.4.1.9.1.2301    #  Cisco ASA 5555td
+  - 1.3.6.1.4.1.9.1.2302    #  Cisco ASA 5506td
+  - 1.3.6.1.4.1.9.1.2303    #  Cisco ASA 5506Wtd
+  - 1.3.6.1.4.1.9.1.2304    #  Cisco ASA 5506Htd
+  - 1.3.6.1.4.1.9.1.2305    #  Cisco ASA 5508td
+  - 1.3.6.1.4.1.9.1.2306    #  Cisco ASA 5516td
+  - 1.3.6.1.4.1.9.1.2663    #  Cisco Firepower 1120 Security Appliance
+
+metrics:
+# Hardware failover
+  - MIB: CISCO-FIREWALL-MIB
+    table:
+      OID: 1.3.6.1.4.1.9.9.147.1.2.1.1
+      name: cfwHardwareStatusTable
+    symbols:
+      - OID: 1.3.6.1.4.1.9.9.147.1.2.1.1.1.3
+        name: cfwHardwareStatusValue
+        enum:
+          other: 1
+          up: 2
+          down: 3
+          error: 4
+          overTemp: 5
+          busy: 6
+          noMedia: 7
+          backup: 8
+          active: 9
+          standby: 10
+        tag: failover_status
+    metric_tags:
+      - column:
+          OID: 1.3.6.1.4.1.9.9.147.1.2.1.1.1.2
+          name: cfwHardwareInformation
+        tag: failover_description
+      - column:
+          OID: 1.3.6.1.4.1.9.9.147.1.2.1.1.1.4
+          name: cfwHardwareStatusDetail
+        tag: failover_status_detail
+
+# Firewall connections
+  - MIB: CISCO-FIREWALL-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.147.1.2.2.2.1.5.40.6
+      name: cfwConnectionStatValue
+      tag: current_firewall_connections
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.147.1.2.2.2.1.5.40.7
+      name: cfwConnectionStatValue
+      tag: highest_firewall_connections
+  - MIB: CISCO-REMOTE-ACCESS-MONITOR-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.392.1.4.1.2.0
+      name: crasNumDeclinedSessions
+  - MIB: CISCO-REMOTE-ACCESS-MONITOR-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.392.1.3.1.0
+      name: crasNumSessions
+  - MIB: CISCO-REMOTE-ACCESS-MONITOR-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.392.1.3.3.0
+      name: crasNumUsers
+  - MIB: CISCO-REMOTE-ACCESS-MONITOR-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.392.1.4.1.3.0
+      name: crasNumSetupFailInsufResources
+  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.171.1.3.1.1.0
+      name: cipSecGlobalActiveTunnels
+  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.171.1.3.1.4.0
+      name: cipSecGlobalHcInOctets
+  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.171.1.3.1.17.0
+      name: cipSecGlobalHcOutOctets
+
+# Phase 1 IPSEC metrics
+  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.171.1.2.1.1.0
+      name: cikeGlobalActiveTunnels
+  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.171.1.2.1.3.0
+      name: cikeGlobalInOctets
+  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.171.1.2.1.4.0
+      name: cikeGlobalInPkts
+  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.171.1.2.1.11.0
+      name: cikeGlobalOutOctets
+  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.171.1.2.1.12.0
+      name: cikeGlobalOutPkts
+
+# Phase 2 IPSEC metrics
+  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.171.1.3.1.1.0
+      name: cipSecGlobalActiveTunnels
+  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.171.1.3.1.4.0
+      name: cipSecGlobalHcInOctets
+  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.171.1.3.1.9.0
+      name: cipSecGlobalInPkts
+  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.171.1.3.1.17.0
+      name: cipSecGlobalHcOutOctets
+  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.171.1.3.1.22.0
+      name: cipSecGlobalOutPkts
+
+# URL Filters
+  - MIB: CISCO-UNIFIED-FIREWALL-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.491.1.3.1.2.0
+      name: cufwUrlfRequestsNumProcessed
+  - MIB: CISCO-UNIFIED-FIREWALL-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.491.1.3.1.5.0
+      name: cufwUrlfRequestsNumAllowed
+  - MIB: CISCO-UNIFIED-FIREWALL-MIB
+    symbol:
+      OID: 1.3.6.1.4.1.9.9.491.1.3.1.6.0
+      name: cufwUrlfRequestsNumDenied

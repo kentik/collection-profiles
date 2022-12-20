@@ -1,0 +1,50 @@
+# oc-address-ipv4_ipAddrTable.yml
+# SNMP: IP-MIB::IpAddrTable
+# OC: /interfaces/interface/subinterfaces/subinterface/ipv4/addresses/address/state
+#
+# Profile intents to collect metadata about the device IPv4 addresses using IP-MIB::ipAddrTable
+# Trying to normalize data to openconfig model as close as possible
+
+metrics:
+
+- MIB: /interfaces/subinterfaces
+  table:
+    OID: .1.3.6.1.2.1.4.20    # ipAddrTable
+    name: ipv4/addresses      # kentik-path: /interfaces/subinterfaces/ipv4/addresses
+    # oc-path: /interfaces/interface/subinterfaces/subinterface/ipv4/addresses/address/state
+
+  symbols:
+
+      # using this just to have one metric
+    - tag: ipv4-address:ip-max-size
+      OID: .1.3.6.1.2.1.4.20.1.5
+      name: ipAdEntReasmMaxSize
+
+  metric_tags:
+
+    - tag: ipv4-address:ip
+      column:
+        OID: .1.3.6.1.2.1.4.20.1.1    # ipAdEntAddr
+        name: ipAdEntAddr
+
+    - tag: ipv4-address:ifindex
+      column:
+        OID: .1.3.6.1.2.1.4.20.1.2    # ipAdEntIfIndex
+        name: ipAdEntIfIndex
+
+    - tag: ipv4-address:netmask
+      column:
+        OID: .1.3.6.1.2.1.4.20.1.3    # ipAdEntNetMask
+        name: ipAdEntNetMask
+        script: |
+          def main(n):
+            if n["ipv4-address:netmask"] not in "":
+              bits = dict([("0", 0), ("128", 1), ("192", 2), ("224", 3), ("240", 4), ("248", 5), ("252", 6), ("254", 7), ("255", 8)])
+              mask_list = n["ipv4-address:netmask"].split(".")
+              prefix = 0
+              for octet in mask_list:
+                prefix = prefix + bits[octet]
+              n["ipv4-address:prefix-length"] = prefix
+              if n["ipv4-address:ip"] not in "":
+                n["ipv4-address:ip-prefix"] = n["ipv4-address:ip"] + "/" + str(prefix)
+            return None

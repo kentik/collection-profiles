@@ -1,0 +1,83 @@
+# oc-address-ipv6_ipAddrTable.yml
+# SNMP: IPv6-MIB::Ipv6AddrTable
+# OC: /interfaces/interface/subinterfaces/subinterface/ipv6/addresses/address/state
+#
+# Profile intents to collect metadata about the device IPv6 addresses using SNMP IPv6-MIB::Ipv6AddrTable
+# Trying to normalize data to openconfig model as close as possible
+
+metrics:
+
+- MIB: /interfaces/subinterfaces
+  table:
+    OID: 1.3.6.1.2.1.55.1.8    # Ipv6AddrTable
+    name: ipv6/addresses       # kentik-path: /interfaces/subinterfaces/ipv6/addresses
+    # oc-path: /interfaces/interface/subinterfaces/subinterface/ipv6/addresses/address/state
+  
+  symbols:
+
+      # using status in order to have one metric
+    - tag: ipv6-address:status
+      OID: 1.3.6.1.2.1.55.1.8.1.5    # ipv6AddrStatus
+      name: ipv6AddrStatus
+  
+  metric_tags:
+
+    # For some reason this is not returned on Juniper 
+    #- tag: ipv6_address
+    #  column:
+    #    OID: .1.3.6.1.2.1.55.1.8.1.1
+    #    name: ipv6AddrAddress
+
+    - tag: ipv6-address:type
+      column:
+        OID: .1.3.6.1.2.1.55.1.8.1.3 # ipv6AddrType
+        name: ipv6AddrType
+        enum:
+          stateless: 1
+          stateful: 2
+          unknown: 3
+    
+    - tag: ipv6-address:status
+      column:
+        OID: .1.3.6.1.2.1.55.1.8.1.5    # ipv6AddrStatus
+        name: ipv6AddrStatus
+        enum:
+          PREFERRED: 1
+          DEPRECATED: 2
+          INVALID: 3
+          INACCESSIBLE: 4
+          UNKNOWN: 5 
+          TENTATIVE: 6
+          DUPLICATE: 7
+          OPTIMISTIC: 8
+    
+    # - tag: origin
+    
+    - tag: ipv6-address:prefix-length
+      column:
+        OID: .1.3.6.1.2.1.55.1.8.1.2    # ipv6AddrPfxLength
+        name: ipv6AddrPfxLength
+        # This script is used to extract ifindex and ipv6 address from the SNMP table index
+        script: |
+          def main(n):
+
+            def index_to_ipv6_address(index_str):
+              ipv6_address = ""
+              for i, value in enumerate(index_str.split(".")):
+                if i > 0 and i % 2 == 0:    
+                    ipv6_address += ":"
+                v = int(value)
+                if v < 15:
+                    ipv6_address += "0%x" % (v)
+                else:
+                    ipv6_address += "%x" % (v)
+              return ipv6_address
+          
+            if n["ipv6-address:status"] not in "":
+              index_list = n.Index.split(".", 1)
+              n["ipv6-address:ifindex"] = index_list[0]
+              ip = index_to_ipv6_address(index_list[1])
+              n["ipv6-address:ip"] = ip
+              n["ipv6-address:ip-prefix"] = ip + "/" + str(n["ipv6-address:prefix-length"])
+
+            return None

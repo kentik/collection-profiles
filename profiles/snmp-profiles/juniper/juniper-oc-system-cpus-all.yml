@@ -1,0 +1,29 @@
+# file: juniper-oc-system-cpus-all.yml
+# SNMP: JUNIPER-MIB::jnxOperatingTable
+# OC: /system/cpus/cpu[index="ALL"]/state/total/instant
+# Kentik-path: /system/cpus
+---
+
+metrics:
+
+# This is a single CPU utilization metrics
+# oc-path: openconfig-system:/system/cpus/cpu[index="ALL"]/state/total/instant
+# The "cpu" with index="ALL" gives values across all the CPUs or CPU cores
+  - MIB: "/system"
+    table:
+      OID: 1.3.6.1.4.1.999999.2636.3
+      name: "cpus"
+    symbols:
+      # Routing engine 0 is always index 9.1.0.0
+      - tag: oc-cpus:total/instant
+        OID: .1.3.6.1.4.1.2636.3.1.13.1.8.9.1.0.0
+        name: jnxOperatingCPU
+    metric_tags:
+      - column:
+          # static value "ALL"
+          name: cpu_index
+          OID: 1.3.6.1.6.3.1135.6169.ALL
+      - column:
+          # static value 0
+          name: index
+          OID: 1.3.6.1.6.3.1135.6169.0

@@ -1,0 +1,27 @@
+# file: juniper-oc-system-memory.yml
+# SNMP: JUNIPER-MIB::jnxOperatingTable
+# OC: /system/memory
+# Kentik-path: /system/memory
+---
+
+metrics:
+
+# This is a single memory info
+# OC paths for memory, no path for utilization
+# oc-path: openconfig-system:/system/memory/state/physical
+# oc-path: openconfig-system:/system/memory/state/reserved
+# oc-path: openconfig-system:/system/memory/state/used
+# oc-path: openconfig-system:/system/memory/state/free
+  - MIB: "/system"
+    table:
+      OID: 1.3.6.1.4.1.999999.2636.4
+      name: "memory"
+    symbols:
+        # Routing engine 0 is always index 9.1.0.0
+      - tag: oc-memory:utilization
+        OID: .1.3.6.1.4.1.2636.3.1.13.1.11.9.1.0.0
+        name: jnxOperatingBuffer
+    metric_tags:
+      - column:
+          name: index
+          OID: 1.3.6.1.6.3.1135.6169.0

@@ -1,0 +1,181 @@
+# oc-lldp.yml
+# SNMP: LLDP-MIB
+# OC: /lldp
+
+# Profile intents to collect metadata and metrics about device LLDP from SNMP LLDP-MIB
+# Trying to normalize metrics openconfig model as much as possible
+
+
+metrics:
+
+# LLDP global metadata
+# SNMP: LLDP-MIB::lldpLocalSystemData
+# OC: /lldp/state
+# Kentik-path: /lldp/global
+
+
+  - MIB: 	/lldp
+    table:
+      OID: .1.0.8802.1.1.2.1.3    # LLDP-MIB::lldpLocalSystemData(3)
+      name: global
+    symbols:
+
+      # The type of port identifier encoding used in the associated 'lldpRemPortId' object.
+      - tag: lldp:capabilities
+        OID: .1.0.8802.1.1.2.1.3.6
+        name: lldpLocSysCapEnabled
+
+    metric_tags:
+
+      - tag: lldp:chassis-id-type
+        column:
+          OID: .1.0.8802.1.1.2.1.3.1
+          name: lldpLocChassisIdSubtype
+          enum: 
+            CHASSIS_COMPONENT: 1
+            INTERFACE_ALIAS: 2
+            PORT_COMPONENT: 3
+            MAC_ADDRESS: 4
+            NETWORK_ADDRESS: 5
+            INTERFACE_NAME: 6
+            LOCAL: 7
+
+      - tag: lldp:chassis-id
+        column:
+          OID: .1.0.8802.1.1.2.1.3.2
+          name: lldpLocChassisId
+          conversion: hwaddr
+
+      - tag: lldp:system-name
+        column:
+          OID: .1.0.8802.1.1.2.1.3.3
+          name: lldpLocSysName
+
+      - tag: lldp:system-description
+        column:
+          OID: .1.0.8802.1.1.2.1.3.4
+          name: lldpLocSysDesc
+
+
+
+
+# LLDP interface metadata
+# SNMP: LLDP-MIB::lldpLocPortTable
+# OC: /lldp/interfaces/interface/state
+# Kentik-path: /lldp/interfaces
+  - MIB: 	/lldp
+    table:
+      OID: .1.0.8802.1.1.2.1.4.1    # LLDP-MIB::lldpLocPortTable
+      name: interfaces
+    symbols:
+
+      - tag: lldp-interface:port-id
+        OID: .1.0.8802.1.1.2.1.3.7.1.3
+        name: lldpLocPortId
+
+    metric_tags:
+
+      - tag: lldp-interface:port-id
+        column:
+          OID: .1.0.8802.1.1.2.1.3.7.1.3
+          name: lldpLocPortId
+          script: |
+            def main(n):
+              if n["lldp-interface:port-id-type"].lower() == "interface_name":
+                n["lldp-interface:name"] = n["lldp-interface:port-id"]
+              elif n["lldp-interface:port-id-type"].lower() == "local":
+                n["lldp-interface:ifindex"] = n["lldp-interface:port-id"]
+              elif n["lldp-interface:port-id-type"].lower() == "interface_alias":
+                n["lldp-interface:alias"] = n["lldp-interface:port-id"]
+              return None
+
+      - tag: lldp-interface:port-id-type
+        column:
+          OID: .1.0.8802.1.1.2.1.3.7.1.2
+          name: lldpLocPortIdSubtype
+          enum: 
+            INTERFACE_ALIAS: 1
+            PORT_COMPONENT: 2
+            MAC_ADDRESS: 3
+            NETWORK_ADDRESS: 4
+            INTERFACE_NAME: 5
+            AGENT_CIRCUIT_ID: 6
+            LOCAL: 7
+
+
+
+# LLDP neighbors metadata
+# SNMP: LLDP-MIB::lldpRemTable
+# OC: /lldp/interfaces/interface/neighbors/neighbor/state
+# Kentik-path: /lldp/interfaces/neighbors
+  - MIB: 	/lldp
+    table:
+      OID: .1.0.8802.1.1.2.1.4.1    # LLDP-MIB::lldpRemTable
+      name: interfaces/neighbors
+    symbols:
+
+      - tag: lldp-neighbor:capabilities
+        OID: .1.0.8802.1.1.2.1.4.1.1.12
+        name: lldpRemSysCapEnabled
+
+    metric_tags:
+
+      - tag: lldp-neighbor:chassis-id-type
+        column:
+          OID: 1.0.8802.1.1.2.1.4.1.1.4
+          name: lldpRemChassisIdSubtype
+          enum: 
+            CHASSIS_COMPONENT: 1
+            INTERFACE_ALIAS: 2
+            PORT_COMPONENT: 3
+            MAC_ADDRESS: 4
+            NETWORK_ADDRESS: 5
+            INTERFACE_NAME: 6
+            LOCAL: 7
+
+      - tag: lldp-neighbor:chassis-id
+        column:
+          OID: 1.0.8802.1.1.2.1.4.1.1.5
+          name: lldpRemChassisId
+          conversion: hwaddr
+
+      - tag: lldp-neighbor:port-id-type
+        column:
+          OID: 1.0.8802.1.1.2.1.4.1.1.6
+          name: lldpRemPortIdSubtype
+          enum: 
+            INTERFACE_ALIAS: 1
+            PORT_COMPONENT: 2
+            MAC_ADDRESS: 3
+            NETWORK_ADDRESS: 4
+            INTERFACE_NAME: 5
+            AGENT_CIRCUIT_ID: 6
+            LOCAL: 7
+
+      # The string value used to identify the port component associated with the remote system.
+      - tag: lldp-neighbor:port-id
+        column:
+          OID: 1.0.8802.1.1.2.1.4.1.1.7
+          name: lldpRemPortId
+          # creates additional field "local-port-index", which is the index of the local port table 
+          script: |
+            def main(n):
+              index_list = n["Index"].split(".")
+              n["local-port-index"] = index_list[1]
+              return None
+
+      - tag: lldp-neighbor:port-description
+        column:
+          OID: 1.0.8802.1.1.2.1.4.1.1.8
+          name: lldpRemPortDesc
+
+      # The string value used to identify the system name of the remote system.
+      - tag: lldp-neighbor:system-name
+        column: 
+          OID: 1.0.8802.1.1.2.1.4.1.1.9
+          name: lldpRemSysName
+        
+      - tag: lldp-neighbor:system-description
+        column: 
+          OID: 1.0.8802.1.1.2.1.4.1.1.10
+          name: lldpRemSysDesc

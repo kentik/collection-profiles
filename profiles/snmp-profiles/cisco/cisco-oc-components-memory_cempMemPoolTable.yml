@@ -1,0 +1,105 @@
+# file: cisco-oc-components-memory_cempMemPoolTable.yml
+# SNMP: CISCO-ENHANCED-MEMPOOL-MIB::cempMemPoolTable
+# OC: /components/component/state/memory
+# Kentik-path: /components/memory
+---
+
+extends:
+  - oc-components_entPhysicalTable.yml
+
+metrics:
+
+  - MIB: /components
+    table:
+      OID: .1.3.6.1.4.1.9.9.221.1.1.1   # CISCO-ENHANCED-MEMPOOL-MIB::cempMemPoolTable
+      name: memory
+    symbols:
+
+      # OC specifies 'utilized'=used and 'available'=total.
+      # In OC there is not 'free' or 'utilization' which is percentage
+      # utilization does not exist in the OC
+      - tag: cisco-components-memory_2:utilized
+        OID: .1.3.6.1.4.1.9.9.221.1.1.1.1.7
+        name: cempMemPoolUsed
+
+      # Does not exist in OC
+      - tag: cisco-components-memory_2:free
+        OID: .1.3.6.1.4.1.9.9.221.1.1.1.1.8
+        name: cempMemPoolFree
+      # utilization does not exist in the OC
+      # total does not exist in the OC
+      # We need to calculate utilization
+        script: |
+          def main(n):
+            n["cisco-components-memory_2:utilized"] = int(n["cisco-components-memory_2:utilized"])
+            n["cisco-components-memory_2:free"] = int(n["cisco-components-memory_2:free"])
+            n["cisco-components-memory_2:available"] = n["cisco-components-memory_2:free"] + n["cisco-components-memory_2:utilized"]
+            n["cisco-components-memory_2:utilization"] = int(float(100) * float(n["cisco-components-memory_2:utilized"]) / float(n["cisco-components-memory_2:available"]))
+            return None
+
+      # utilization does not exist in the OC
+      # We need starlark support for metrics to process this and calculate utilization
+      #- tag: memory:utilization
+
+    metric_tags:
+      - tag: cisco-components-memory_2:name
+        column:
+          OID: .1.3.6.1.4.1.9.9.221.1.1.1.1.3
+          name: cempMemPoolName
+          # The script will overwrite the index of the table with the value from cpmCPUTotalPhysicalIndex
+          # which is the index value from the ENTITY-MIB
+          script: |
+            def main(n):
+              if "Processor" in n["cisco-components-memory_2:name"]:
+                index_list = n["Index"].split(".")
+                n["Index"] = index_list[0]
+              return None
+
+
+# Example output:
+# Index from ENTITY-MIB + .1 or .2 for Processor or I/O
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.2.1001.1 = INTEGER: 2
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.2.1001.2 = INTEGER: 3
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.2.1017.1 = INTEGER: 2
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.2.1017.2 = INTEGER: 3
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.2.2001.1 = INTEGER: 2
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.3.1001.1 = STRING: "Processor"
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.3.1001.2 = STRING: "I/O"
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.3.1017.1 = STRING: "Processor"
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.3.1017.2 = STRING: "I/O"
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.3.2001.1 = STRING: "Processor"
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.4.1001.1 = OID: SNMPv2-SMI::zeroDotZero
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.4.1001.2 = OID: SNMPv2-SMI::zeroDotZero
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.4.1017.1 = OID: SNMPv2-SMI::zeroDotZero
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.4.1017.2 = OID: SNMPv2-SMI::zeroDotZero
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.4.2001.1 = OID: SNMPv2-SMI::zeroDotZero
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.5.1001.1 = INTEGER: 0
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.5.1001.2 = INTEGER: 0
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.5.1017.1 = INTEGER: 0
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.5.1017.2 = INTEGER: 0
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.5.2001.1 = INTEGER: 0
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.6.1001.1 = INTEGER: 1
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.6.1001.2 = INTEGER: 1
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.6.1017.1 = INTEGER: 1
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.6.1017.2 = INTEGER: 1
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.6.2001.1 = INTEGER: 1
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.7.1001.1 = Gauge32: 211496200
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.7.1001.2 = Gauge32: 20884944
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.7.1017.1 = Gauge32: 457149912
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.7.1017.2 = Gauge32: 21605592
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.7.2001.1 = Gauge32: 91551092
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.8.1001.1 = Gauge32: 647658952
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.8.1001.2 = Gauge32: 46223920
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.8.1017.1 = Gauge32: 439673288
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.8.1017.2 = Gauge32: 45503272
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.8.2001.1 = Gauge32: 893168556
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.9.1001.1 = Gauge32: 614490200
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.9.1001.2 = Gauge32: 46223868
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.9.1017.1 = Gauge32: 430959752
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.9.1017.2 = Gauge32: 45501532
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.9.2001.1 = Gauge32: 483095224
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.10.1001.1 = Gauge32: 614514228
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.10.1001.2 = Gauge32: 46223920
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.10.1017.1 = Gauge32: 426076012
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.10.1017.2 = Gauge32: 44917544
+# CISCO-SMI::ciscoMgmt.221.1.1.1.1.10.2001.1 = Gauge32: 893081156

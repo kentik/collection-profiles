@@ -1,0 +1,48 @@
+# file: cisco-oc-components-memory.yml
+# SNMP: CISCO-MEMORY-POOL-MIB::ciscoMemoryPoolTable
+# OC: /components/component/state/memory
+# Kentik-path: /components/memory
+---
+
+extends:
+  - oc-components_entPhysicalTable.yml
+
+metrics:
+
+  - MIB: /components
+    table:
+      OID: .1.3.6.1.4.1.9.9.48.1.1    # CISCO-MEMORY-POOL-MIB::ciscoMemoryPoolTable
+      name: memory
+    symbols:
+
+      # OC specifies 'utilized'=used and 'available'=total.
+      # In OC there is not 'free' or 'utilization' which is percentage
+      # utilization does not exist in the OC
+      - tag: cisco-components-memory:utilized
+        OID: .1.3.6.1.4.1.9.9.48.1.1.1.5
+        name: ciscoMemoryPoolUsed
+
+      # Does not exist in OC
+      - tag: cisco-components-memory:free
+        OID: .1.3.6.1.4.1.9.9.48.1.1.1.6
+        name: ciscoMemoryPoolFree
+        # utilization does not exist in the OC
+        # total does not exist in the OC
+        # We need to calculate utilization
+        script: |
+          def main(n):
+            n["cisco-components-memory:utilized"] = int(n["cisco-components-memory:utilized"])
+            n["cisco-components-memory:free"] = int(n["cisco-components-memory:free"])
+            n["cisco-components-memory:available"] = n["cisco-components-memory:free"] + n["cisco-components-memory:utilized"]
+            n["cisco-components-memory:utilization"] = int(float(100) * float(n["cisco-components-memory:utilized"]) / float(n["cisco-components-memory:available"]))
+            return None
+
+      # utilization does not exist in the OC
+      # We need starlark support for metrics to process this and calculate utilization
+      #- tag: memory:utilization
+
+    metric_tags:
+      - tag: cisco-components-memory:name
+        column:
+          OID: .1.3.6.1.4.1.9.9.48.1.1.1.2
+          name: ciscoMemoryPoolName

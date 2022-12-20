@@ -1,0 +1,232 @@
+# oc-ospf.yml
+# SNMP: OSPF-MIB
+# OC: /network-instances/network-instance/protocols/protocol/ospfv2
+
+# Profile intents to collect metadata and metrics about device interface from SNMP OSPF-MIB
+# Trying to normalize metrics to openconfig-ospf model as much as possible
+
+
+metrics:
+
+# OSPFv2 global metadata
+# SNMP: OSPF-MIB
+# OC: /network-instances/network-instance/protocols/protocol/ospfv2/global
+
+  - MIB: /protocols
+    table:
+      OID: 1.3.6.1.4.1.14.1
+      name: ospfv2/global
+      # oc_path: /network-instances/network-instance/protocols/protocol/ospfv2/global/state
+
+    symbols:
+      - tag: ospf:external-lsa-count
+        OID: 1.3.6.1.2.1.14.1.6
+        name: ospfExternLsaCount
+      #- OID: 1.3.6.1.2.1.14.1.24
+      #  name: ospf-as-lsa-count
+
+    metric_tags:
+      - tag: ospf:router-id
+        column:
+          OID: 1.3.6.1.2.1.14.1.1
+          name: ospfRouterId
+
+      - tag: ospf:area-border-router
+        column:
+          OID: 1.3.6.1.2.1.14.1.4
+          name: ospfAreaBdrRtrStatus
+          enum: 
+            "true": 1
+            "false": 2
+
+      - tag: ospf:as-border-router
+        column:
+          OID: 1.3.6.1.2.1.14.1.5
+          name: ospfASBdrRtrStatus
+          enum: 
+            "true": 1
+            "false": 2
+
+      - tag: ospf:opaque-lsa-support
+        # oc-path: mpls/state/traffic-engineering-extensions
+        column:
+          OID: 1.3.6.1.2.1.14.1.16
+          name: ospfOpaqueLsaSupport
+          enum: 
+            "true": 1
+            "false": 2
+
+      - tag: ospf:reference-bandwidth
+        column:
+          OID: 1.3.6.1.2.1.14.1.17
+          name: ospfReferenceBandwidth
+
+
+
+# Description: OSPF interfaces metadata and metrics
+# SNMP: OSPF-MIB::ospfIfTable
+# OC: /network-instances/network-instance/protocols/protocol/ospfv2/areas/area/interfaces/interface/state
+# Kentik-path: /protocols/ospfv2/areas/interfaces
+
+  - MIB: /protocols
+    table:
+      OID: 1.3.6.1.2.1.14.7    # ospfIfTable(7)
+      name: ospfv2/areas/interfaces    # kentik-path: 
+      # oc-path: /network-instances/network-instance/protocols/protocol/ospfv2/areas/area/interfaces/interface/state
+
+    symbols:
+
+      - tag: ospf:lsa-count
+        OID: 1.3.6.1.2.1.14.7.1.21
+        name: ospfIfLsaCount
+
+      - tag: ospf:state
+        OID: 1.3.6.1.2.1.14.7.1.12
+        name: ospfIfState
+        enum:
+          down: 1
+          loopback: 2
+          waiting: 3
+          pointToPoint: 4
+          designatedRouter: 5
+          backupDesignatedRouter: 6
+          otherDesignatedRouter: 7
+
+    metric_tags:
+      - tag: ospf:id
+        column:
+          OID: 1.3.6.1.2.1.14.7.1.1
+          name: ospfIfIpAddress
+
+      - tag: ospf:ifindex
+        column:
+          OID: 1.3.6.1.2.1.14.7.1.2
+          name: ospfAddressLessIf
+
+      - tag: ospf:area
+        column:
+          OID: 1.3.6.1.2.1.14.7.1.3
+          name: ospfIfAreaId
+
+      - tag: ospf:network-type
+        column:
+          OID: 1.3.6.1.2.1.14.7.1.4
+          name: ospfIfType
+          enum: 
+            BROADCAST_NETWORK: 1
+            NON_BROADCAST_NETWORK: 2
+            POINT_TO_POINT_NETWORK: 3
+            POINT_TO_MULTIPOINT_NETWORK: 5
+      
+      - tag: ospf:priority
+        column:
+          OID: 1.3.6.1.2.1.14.7.1.6
+          name: ospfIfRtrPriority
+
+      # oc-path: /network-instances/network-instance/protocols/protocol/ospfv2/areas/area/interfaces/interface/timers/state      
+      - tag: ospf:timers/retransmission-interval
+        column:
+          OID: 1.3.6.1.2.1.14.7.1.8
+          name: ospfIfRetransInterval
+
+      - tag: ospf:timers/hello-interval
+        column:
+          OID: 1.3.6.1.2.1.14.7.1.9
+          name: ospfIfHelloInterval(9)
+
+      - tag: ospf:timers/dead-interval
+        column:
+          OID: 1.3.6.1.2.1.14.7.1.10
+          name: ospfIfRtrDeadInterval
+
+      - tag: ospf:metric
+        column:
+          OID: 1.3.6.1.2.1.14.8.1.4
+          name: ospfIfMetricValue
+
+      - tag: ospf:authentication-type
+        column:
+          OID: 1.3.6.1.2.1.14.7.1.20
+          name: ospfIfAuthType
+          enum:
+            NONE: 0
+            SIMPLE_PASSWORD: 1
+            MD5: 2
+
+      - tag: ospf:designated-router
+        # oc-path: /network-instances/network-instance/protocols/protocol/ospfv2/areas/area/interfaces/interface/neighbors/neighbor/state/designated-router
+        column:
+          OID: 1.3.6.1.2.1.14.7.1.13
+          name: ospfIfDesignatedRouter
+
+      - tag: ospf:backup-designated-router
+        column:
+          OID: 1.3.6.1.2.1.14.7.1.14
+          name: ospfIfBackupDesignatedRouter
+
+
+
+# Description: OSPF neighbors metadata and metrics
+# SNMP: OSPF-MIB::ospfNbrTable
+# OC: /network-instances/network-instance/protocols/protocol/ospfv2/areas/area/interfaces/interface/neighbors/neighbor/state
+# Kentik-path: /protocols/ospfv2/areas/interfaces/neighbors
+
+  - MIB: /protocols
+    table:
+      OID: 1.3.6.1.2.1.14.10    # ospfNbrTable(10)
+      name: ospfv2/areas/interfaces/neighbors
+      # oc-path: /network-instances/network-instance/protocols/protocol/ospfv2/areas/area/interfaces/interface/neighbors/neighbor/state
+
+    symbols:
+
+      - tag: ospf-neighbor:adjacency-state
+        OID: 1.3.6.1.2.1.14.10.1.6
+        name: ospfNbrState
+        enum:
+          DOWN: 1
+          ATTEMPT: 2
+          INIT: 3
+          TWO_WAY: 4
+          EXSTART: 5
+          EXCHANGE: 6
+          LOADING: 7
+          FULL: 8
+
+      - tag: ospf-neighbor:state-changes
+        OID: 1.3.6.1.2.1.14.10.1.7
+        name: ospfNbrEvents
+
+      - tag: ospf-neighbor:retranmission-queue-length
+        OID: 1.3.6.1.2.1.14.10.1.8
+        name: ospfNbrLsRetransQLen
+
+    metric_tags:
+
+      - tag: ospf-neighbor:router-id
+        column:
+          OID: 1.3.6.1.2.1.14.10.1.3
+          name: ospfNbrRtrId
+
+      - tag: ospf-neighbor:ip-address
+        column:
+          OID: 1.3.6.1.2.1.14.10.1.1
+          name: ospfNbrIpAddr
+
+      - tag: ospf-neighbor:priority
+        column:
+          OID: 1.3.6.1.2.1.14.10.1.5
+          name: ospfNbrPriority
+
+      # - tag: ospf-neighbor:adjacency-state
+      #   column:
+      #     OID: 1.3.6.1.2.1.14.10.1.6
+      #     name: ospfNbrState
+      #     enum:
+      #       DOWN: 1
+      #       ATTEMPT: 2
+      #       INIT: 3
+      #       TWO_WAY: 4
+      #       EXSTART: 5
+      #       EXCHANGE: 6
+      #       LOADING: 7
+      #       FULL: 8

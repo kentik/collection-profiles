@@ -1,0 +1,17 @@
+# Profile is intended to be used in an extends block
+# http://oid-info.com/get/1.3.6.1.2.1.1
+---
+metric_tags:
+  - column:
+      OID: 1.3.6.1.2.1.1.1.0
+      name: sysDescr
+  - column:
+      OID: 1.3.6.1.2.1.1.2.0
+      name: sysObjectID
+      allow_duplicate: true
+  - column:
+      OID: 1.3.6.1.2.1.1.5.0
+      name: sysName
+  - column:
+      OID: 1.3.6.1.2.1.1.6.0
+      name: sysLocation

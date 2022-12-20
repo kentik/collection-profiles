@@ -1,0 +1,38 @@
+# https://oidref.com/1.3.6.1.4.1.25461.2.3
+---
+extends:
+  - system-mib.yml
+  - if-mib.yml
+  - host-resources-mib.yml
+  - ospf-mib.yml
+  - entity-sensor-mib.yml
+
+provider: kentik-firewall
+
+sysobjectid: 1.3.6.1.4.1.25461.2.3.*
+
+metrics:
+  - MIB: PAN-COMMON-MIB
+    symbols:
+      - OID: 1.3.6.1.4.1.25461.2.1.2.3.1.0
+        name: panSessionUtilization
+      - OID: 1.3.6.1.4.1.25461.2.1.2.3.2.0
+        name: panSessionMax
+      - OID: 1.3.6.1.4.1.25461.2.1.2.3.3.0
+        name: panSessionActive
+      - OID: 1.3.6.1.4.1.25461.2.1.2.3.4.0
+        name: panSessionActiveTcp
+      - OID: 1.3.6.1.4.1.25461.2.1.2.3.5.0
+        name: panSessionActiveUdp
+      - OID: 1.3.6.1.4.1.25461.2.1.2.3.6.0
+        name: panSessionActiveICMP
+      - OID: 1.3.6.1.4.1.25461.2.1.2.3.7.0
+        name: panSessionActiveSslProxy
+      - OID: 1.3.6.1.4.1.25461.2.1.2.3.8.0
+        name: panSessionSslProxyUtilization
+      - OID: 1.3.6.1.4.1.25461.2.1.2.5.1.1.0
+        name: panGPGWUtilizationPct
+      - OID: 1.3.6.1.4.1.25461.2.1.2.5.1.2.0
+        name: panGPGWUtilizationMaxTunnels
+      - OID: 1.3.6.1.4.1.25461.2.1.2.5.1.3.0
+        name: panGPGWUtilizationActiveTunnels

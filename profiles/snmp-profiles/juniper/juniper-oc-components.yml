@@ -1,0 +1,207 @@
+# juniper-oc-components.yml
+# SNMP: 
+#   - JUNIPER-MIB::jnxContentsTable
+#   - JUNIPER-MIB::jnxOperatingTable
+#   - JUNIPER-MIB::jnxFruTable
+# OC: /components/component/state
+# Kentik-path: /components
+
+# Profile intents to collect metadata and metrics about device components from JUNIPER-MIB and jnxContentsTable
+# Trying to normalize metrics to openconfig-platform:/components model as much as possible
+
+metrics:
+
+  - MIB: /
+    table:
+      OID: .1.3.6.1.4.1.2636.3.1.8    # JUNIPER-MIB::jnxContentsTable
+      name: components # /components
+      # oc-path: /components/component/state
+
+    symbols:
+
+        # here just to have one metric - not in OC
+      - tag: components:uptime     # this is in TimeTicks - The time interval in 10-millisecond period that this subject has been up and running since the last power on time
+        OID: .1.3.6.1.4.1.2636.3.1.13.1.13  
+        name: jnxOperatingUpTime
+
+
+      # This enum values here are not compatible with ENTITY-STATE-MIB - have to be translated somehow
+      - tag: components:oper-status
+        OID: .1.3.6.1.4.1.2636.3.1.13.1.6
+        name: jnxOperatingState 
+        enum:                      
+        # Normalize to oper-status, alarm-status and alarm-severity
+        # oper-status: UNKNOWN 0, ACTIVE 1, INACTIVE 2, DISABLED 3
+          unknown: 1              # UNKNOWN
+          running: 2              # ACTIVE
+          ready: 3                # ACTIVE
+          reset: 4                # INACTIVE
+          runningAtFullSpeed: 5   # ACTIVE
+          down: 6                 # INACTIVE
+          standby: 7              # ACTIVE
+        script: |
+          def main(n):
+            # UNKNOWN
+            if n["components:oper-status"] == 1:
+              n["components:oper-status"] = 0
+            # ACTIVE - up
+            elif n["components:oper-status"] == 2 or n["components:oper-status"] == 3 or n["components:oper-status"] == 5 or n["components:oper-status"] == 7:
+              n["components:oper-status"] = 1
+            # INACTIVE - down
+            elif n["components:oper-status"] == 4 or n["components:oper-status"] == 6:
+              n["components:oper-status"] = 2
+            # No DISABLED
+            return None
+
+    metric_tags:
+      - tag: components:name
+        column:
+          OID: .1.3.6.1.4.1.2636.3.1.8.1.6
+          name: jnxContentsDescr
+
+      # Adding oper-status as a tag, as it can help with the 
+      - tag: components:original-state
+        column: 
+          OID: .1.3.6.1.4.1.2636.3.1.13.1.6
+          name: jnxOperatingState 
+          enum:                      # ENTTITY-STATE-MIB values: unknown: 1, disabled: 2, enabled: 3, testing: 4
+            # These values are different from ENTITY-STATE
+            unknown: 1
+            running: 2
+            ready: 3
+            reset: 4
+            runningAtFullSpeed: 5
+            down: 6
+            standby: 7 
+          script: |
+            def main(n):
+              if n.Index == "1.1.0.0":
+                n["components:type"] = "CHASSIS"
+              elif n["index"] == "1.1.0.0":
+                n["components:type"] = "CHASSIS"
+              elif n["components:original-type"] == "fan":
+                n["components:type"] = "FAN"
+              elif n["components:original-type"] == "routingEngine":
+                n["components:type"] = "OTHER"
+              elif n["components:original-type"] == "powerEntryModule" or n["components:original-type"] == "powerSupplyModule":
+                n["components:type"] = "POWER_SUPPLY"
+              elif n["components:original-type"] == "controlBoard":
+                n["components:type"] = "BACKPLANE"
+              elif n["components:original-type"] == "flexiblePicConcentrator":
+                n["components:type"] = "CONTAINER"
+              elif n["components:original-type"] == "portInterfaceCard":
+                n["components:type"] = "MODULE"
+              else:
+                n["components:type"] = "OTHER"
+              return None
+
+
+      # entPhysicalVendorType is the OID reference to the Vendor MIBs
+      # to many moving components to track for now
+      #- tag: components:vendor_type
+      #  column:
+      #    OID: .1.3.6.1.2.1.47.1.1.1.1.3
+      #    name: entPhysicalVendorType
+      
+      # Types from ENTITY-MIB
+      #     enum:
+      #       OTHER: 1
+      #       UNKNOWN: 2
+      #       CHASSIS: 3
+      #       BACKPLANE: 4
+      #       CONTAINER: 5
+      #       POWER_SUPPLY: 6
+      #       FAN: 7
+      #       SENSOR: 8
+      #       MODULE: 9
+      #       PORT: 10
+      #       STACK: 11
+      #       CPU: 12
+
+      - tag: components:original-type
+        column:
+          OID: .1.3.6.1.4.1.2636.3.1.15.1.6
+          name: jnxFruType
+          enum:
+            other: 1
+            clockGenerator: 2
+            flexiblePicConcentrator: 3
+            switchingAndForwardingModule: 4
+            controlBoard: 5
+            routingEngine: 6
+            powerEntryModule: 7
+            frontPanelModule: 8
+            switchInterfaceBoard: 9
+            processorMezzanineBoardForSIB: 10
+            portInterfaceCard: 11
+            craftInterfacePanel: 12
+            fan: 13
+            lineCardChassis: 14
+            forwardingEngineBoard: 15
+            protectedSystemDomain: 16
+            powerDistributionUnit: 17
+            powerSupplyModule: 18
+            switchFabricBoard: 19
+            adapterCard: 20
+            ftc: 21
+
+          
+      - tag: components:description
+        column:
+          OID: .1.3.6.1.4.1.2636.3.1.8.1.14
+          name: jnxContentsModel
+          
+      - tag: components:hardware-version
+        column:
+          OID: .1.3.6.1.4.1.2636.3.1.8.1.8
+          name: jnxContentsRevision
+          
+      # NOT USED 
+      # - tag: components:firmware-version
+      #   column:
+      #     OID: .1.3.6.1.2.1.47.1.1.1.1.9
+      #     name: entPhysicalFirmwareRev
+          
+      # NOT USED 
+      # - tag: components:software-version
+      #   column:
+      #     OID: .1.3.6.1.2.1.47.1.1.1.1.10
+      #     name: entPhysicalSoftwareRev
+          
+      - tag: components:serial-no
+        column:
+          OID: .1.3.6.1.4.1.2636.3.1.8.1.7
+          name: jnxContentsSerialNo
+
+      # NOT USED   
+      # - tag: components:mfg-name
+      #   column:
+      #     OID: .1.3.6.1.2.1.47.1.1.1.1.12
+      #     name: entPhysicalMfgName
+          
+      - tag: components:model
+        column:
+          OID: .1.3.6.1.4.1.2636.3.1.8.1.10
+          name: jnxContentsPartNo
+
+      # NOT USED 
+      # - tag: components:removable
+      #   column:
+      #     OID: .1.3.6.1.2.1.47.1.1.1.1.16
+      #     name: entPhysicalIsFru
+      #     enum:
+      #       "true": 1
+      #       "false": 2
+
+      # not used        
+      # - tag: components:alias
+      #   column:
+      #     OID: .1.3.6.1.2.1.47.1.1.1.1.14
+      #     name: entPhysicalAlias
+          
+      # - tag: components:asset_id
+      #   column:
+      #     OID: .1.3.6.1.2.1.47.1.1.1.1.15
+      #     name: entPhysicalAssetID
+          
+

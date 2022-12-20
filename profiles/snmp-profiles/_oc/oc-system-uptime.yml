@@ -1,0 +1,21 @@
+# oc-path: /system
+# uses uptime-sec from snmpEngineTime and created boot-time by converting to nanosec
+
+---
+metrics:
+
+# This is general oc-path /system
+  - MIB: "/"
+    table:
+      OID: 1.3.6.1.4.1.999999.2636.2
+      name: "system"
+    symbols:
+      - tag: oc-system:uptime-sec
+        OID: .1.3.6.1.6.3.10.2.1.3
+        name: snmpEngineTime
+        # Adding boot-time in nanosec
+        script: |
+          load('math.star', 'math')
+          def main(n):
+            n["boot-time"] = int(float(n["oc-system:uptime-sec"] * math.pow(10, 9)))
+            return None

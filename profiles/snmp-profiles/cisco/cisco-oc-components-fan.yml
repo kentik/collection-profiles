@@ -1,0 +1,111 @@
+# file: cisco-oc-components-fan.yml
+# SNMP: CISCO-ENVMON-MIB::ciscoEnvMonFanStatusTable
+# OC: /components/component/state/temperature
+# Kentik-path: /components/temperature
+---
+
+extends:
+  - oc-components_entPhysicalTable.yml
+
+metrics:
+
+  - MIB: /components
+    table:
+      OID: .1.3.6.1.4.1.9.9.13.1.4    # CISCO-ENVMON-MIB::ciscoEnvMonFanStatusTable
+      name: fan
+      # oc-path: /components/component/state/temperature
+
+    symbols:
+
+      - tag: cisco-components-fan:state
+        OID: .1.3.6.1.4.1.9.9.13.1.4.1.3
+        name: ciscoEnvMonFanState
+        # enum:
+        #   normal: 1
+        #   warning: 2
+        #   critical: 3
+        #   shutdown: 4
+        #   notPresent: 5
+        #   notFunctioning: 6
+        # Normalize to oper-status, alarm-status and alarm-severity
+        # oper-status: UNKNOWN 0, ACTIVE 1, INACTIVE 2, DISABLED 3
+        # alarm-status: false 0, true 1
+        # alarm-severity: UNKNOWN 0, MINOR 1, WARNING 2, MAJOR 3, CRITICAL 4
+        script: |
+          def main(n):
+            # NORMAL
+            if n["cisco-components-fan:state"] == 1:
+              n["cisco-components-fan:oper-status"] = 1
+              n["cisco-components-fan:alarm-status"] = 0
+              n["cisco-components-fan:alarm-severity"] = 0
+            # WARNING
+            elif n["cisco-components-fan:state"] == 2:
+              n["cisco-components-fan:oper-status"] = 1
+              n["cisco-components-fan:alarm-status"] = 1
+              n["cisco-components-fan:alarm-severity"] = 2
+            # MAJOR
+            elif n["cisco-components-fan:state"] == 3:
+              n["cisco-components-fan:oper-status"] = 1
+              n["cisco-components-fan:alarm-status"] = 1
+              n["cisco-components-fan:alarm-severity"] = 3
+            # CRITICAL
+            elif n["cisco-components-fan:state"] == 4:
+              n["cisco-components-fan:oper-status"] = 1
+              n["cisco-components-fan:alarm-status"] = 1
+              n["cisco-components-fan:alarm-severity"] = 4
+            # NOT_PRESENT
+            elif n["cisco-components-fan:state"] == 5:
+              n["cisco-components-fan:oper-status"] = 3
+              n["cisco-components-fan:alarm-status"] = 0
+              n["cisco-components-fan:alarm-severity"] = 0
+            # UNKNOWN
+            elif n["cisco-components-fan:state"] == 6:
+              n["cisco-components-fan:oper-status"] = 0
+              n["cisco-components-fan:alarm-status"] = 0
+              n["cisco-components-fan:alarm-severity"] = 0
+            n.pop("cisco-components-fan:state")
+            return None
+
+
+    metric_tags:
+
+      # this is needed for the old software which do not use the same index as ENTITY-MIB
+      - tag: cisco-components-fan:name
+        column:
+          OID: .1.3.6.1.4.1.9.9.13.1.4.1.2
+          name: ciscoEnvMonFanStatusDescr
+          allow_duplicates: true
+
+      # - tag: cisco-components-fan:name
+      #   column:
+      #     OID: .1.3.6.1.2.1.47.1.1.1.1.7
+      #     name: entPhysicalName
+      #     allow_duplicate: true
+
+      # - tag: cisco-components-fan:description
+      #   column:
+      #     OID: .1.3.6.1.2.1.47.1.1.1.1.2
+      #     name: entPhysicalDescr
+
+
+      # The current state of the testpoint being instrumented.
+      # OC: OPENCONFIG_ALARM_SEVERITY - UNKNOWN, MINOR, WARNING, MAJOR, CRITICAL
+      # 'state' does not exist in OC
+      - tag: cisco-components-fan:original-state
+        column:
+          OID: .1.3.6.1.4.1.9.9.13.1.4.1.3
+          name: ciscoEnvMonFanState
+          enum:
+            normal: 1
+            warning: 2
+            critical: 3
+            shutdown: 4
+            notPresent: 5
+            notFunctioning: 6
+        # Represents the state of a device being monitored. Valid values are: 
+        # normal(1): the environment is good, such as low temperature. 
+        # warning(2): the environment is bad, such as temperature above normal operation range but not too high. 
+        # critical(3): the environment is very bad, such as temperature much higher than normal operation limit. 
+        # shutdown(4): the environment is the worst, the system should be shutdown immediately. 
+        # notPresent(5): the environmental monitor is not present, such as temperature sensors do not exist. 
+        # notFunctioning(6): the environmental monitor does not function properly, such as a temperature sensor generates a abnormal data like 1000 C.

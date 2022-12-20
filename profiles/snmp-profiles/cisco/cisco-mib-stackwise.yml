@@ -1,0 +1,59 @@
+
+  # This table contains stackport specific information.
+  # There exists an entry in this table for every physical stack port that have an entry in the ifTable (IF-MIB).
+
+metrics:
+
+  - MIB: CISCO-STACKWISE-MIB
+    table:
+      name: cswStackPortInfoTable
+      OID: 1.3.6.1.4.1.9.9.500.1.2.2
+    symbols:
+      # The state of the stackport.
+      - name: cswStackPortOperStatus
+        OID: 1.3.6.1.4.1.9.9.500.1.2.2.1.1
+        enum:
+          up: 1
+          down: 2
+          forcedDown: 3
+    metric_tags:
+      # The textual name of the interface.
+      - tag: if_interface_name
+        column:
+          name: ifName
+          OID: 1.3.6.1.2.1.31.1.1.1.1
+
+  # This table contains information specific to switches in a stack.
+  # Every switch with an entry in the entPhysicalTable (ENTITY-MIB) whose entPhysicalClass is 'chassis' will have an entry in this table.
+  - MIB: CISCO-STACKWISE-MIB
+    table:
+      name: cswSwitchInfoTable
+      OID: 1.3.6.1.4.1.9.9.500.1.2.1
+    symbols:
+      # The current state of a switch.
+      - name: cswSwitchState
+        OID: 1.3.6.1.4.1.9.9.500.1.2.1.1.6
+        enum:
+          waiting: 1
+          progressing: 2
+          added: 3
+          ready: 4
+          sdmMismatch: 5
+          verMismatch: 6
+          featureMismatch: 7
+          newMasterInit: 8
+          provisioned: 9
+          invalid: 10
+          removed: 11
+    metric_tags:
+      # The MAC address of the switch.
+      - tag: mac_address
+        column:
+          name: cswSwitchMacAddress
+          OID: 1.3.6.1.4.1.9.9.500.1.2.1.1.7
+          conversion: hwaddr
+      # The textual name of the physical entity.
+      - tag: entity_name
+        column:
+          name: entPhysicalName
+          OID: 1.3.6.1.2.1.47.1.1.1.1.7

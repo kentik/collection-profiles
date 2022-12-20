@@ -1,0 +1,4 @@
+# Removing MacOS Desktop Services Store file
+.DS_Store
+*.temp
+*.old

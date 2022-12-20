@@ -1,0 +1,317 @@
+# cisco-oc-bgp.yml
+# SNMP: CISCO-BGP4-MIB::cbgpPeer2Table, CISCO-BGP4-MIB::cbgpPeer2AddrFamilyPrefixTable
+# OC: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/state
+# Kentik-path: /protocols/bgp/neighbors
+#
+# Profile intents to collect metadata and metrics about device interface from SNMP BGP4-V2-MIB-JUNIPER
+# Trying to normalize metrics to openconfig-bgp model as much as possible
+
+---
+
+extends:
+  - oc-bgp-global.yml
+
+metrics:
+
+# Description: BGP neighbors metadata and status
+# SNMP: CISCO-BGP4-MIB::cbgpPeer2Table
+# OC: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/state
+# Kentik-path: /protocols/bgp/neighbors
+
+  - MIB: /protocols
+    table:
+      OID: .1.3.6.1.4.1.9.9.187.1.2.5
+      name: bgp/neighbors # /protocols/bgp/neighbors
+      # oc-path: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/state
+
+    symbols:
+
+      - tag: bgp:session-state
+        OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.3
+        name: cbgpPeer2State
+        enum:
+          IDLE: 1
+          CONNECT: 2
+          ACTIVE: 3
+          OPENSENT: 4
+          OPENCONFIRM: 5
+          ESTABLISHED: 6
+       
+      - tag: bgp:messages/received/UPDATE    # oc-path: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/state/messages/sent/UPDATE
+        OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.13
+        name: cbgpPeer2InUpdates
+        
+      - tag: bgp:messages/sent/UPDATE
+        OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.14
+        name: cbgpPeer2OutUpdates
+        
+      - tag: bgp:messages/received/TOTAL
+        OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.15
+        name: cbgpPeer2InTotalMessages
+        
+      - tag: bgp:messages/sent/TOTAL
+        OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.16
+        name: cbgpPeer2OutTotalMessages
+        
+      - tag: bgp:established-transitions
+        OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.18
+        name: cbgpPeer2FsmEstablishedTransitions
+
+      - tag: bgp:last-established
+        OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.19
+        name: cbgpPeer2FsmEstablishedTime
+
+
+    metric_tags:
+
+      # INDEX { cbgpPeer2Type, cbgpPeer2RemoteAddr }
+
+      - tag: bgp:enabled
+        column:
+          OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.4
+          name: cbgpPeer2AdminStatus
+          enum:
+            "false": 1
+            "true": 2
+
+      - tag: bgp:neighbor-address
+        column:
+          OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.12
+          name: cbgpPeer2RemoteIdentifier
+
+      # - tag: bgp:transport/local-address-type
+      #   column:
+      #     OID: 
+      #     name: 
+      #     enum:
+      #       ipv4: 1
+      #       ipv6: 2
+
+      - tag: bgp:transport/local-address
+        column:
+          OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.6
+          name: cbgpPeer2LocalAddr
+          conversion: hextoip
+
+      - tag: bgp:transport/local-port
+        column:
+          OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.7
+          name: cbgpPeer2LocalPort
+
+      - tag: bgp:local-as
+        column:
+          OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.8
+          name: cbgpPeer2LocalAs
+
+      # Embedded into the index, need to extract using script
+      # - tag: bgp:remote-address-type
+      #   column:
+      #     OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.1
+      #     name: 
+      #     enum:
+      #       ipv4: 1
+      #       ipv6: 2
+
+      - tag: bgp:transport/remote-address
+        column:
+          OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.2
+          name: cbgpPeer2RemoteAddr
+          conversion: hextoip
+
+      - tag: bgp:transport/remote-port
+        column:
+          OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.10
+          name: cbgpPeer2RemotePort
+
+      - tag: bgp:peer-as
+        column:
+          OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.11
+          name: cbgpPeer2RemoteAs
+
+      # Not in the OC - this is used to correlate the prefix counters in the different table        
+      # - tag: bgp:prefix-table-index
+      #   column:
+      #     OID: 
+      #     name: 
+
+      # - tag: bgp:network-instance
+      #   column:
+      #     OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.4
+      #     name: 
+
+      # oc-path: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/timers/state/keepalive-interval
+      - tag: bgp:timers/keepalive-interval
+        column:
+          OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.22
+          name: cbgpPeer2KeepAlive
+
+      - tag: bgp:timers/hold-time
+        column:
+          OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.21
+          name: cbgpPeer2HoldTime
+
+
+# Description: BGP prefixes per neighbor
+# SNMP: CISCO-BGP4-MIB::cbgpPeer2Table
+# OC: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/afi-safis/afi-safi/state/prefixes
+# Kentik-path: /protocols/bgp/neighbors/prefixes
+
+  - MIB: /protocols
+    table:
+      OID: .1.3.6.1.4.1.9.9.187.1.2.8
+      name: bgp/neighbors/prefixes # /protocols/bgp/neighbors/prefixes
+
+    symbols:
+
+      # - tag: bgp:received-pre-policy    # in-prefixes
+      #   OID: 
+      #   name:
+        
+      - tag: bgp:received     # in-prefixes-accepted
+        OID: .1.3.6.1.4.1.9.9.187.1.2.8.1.1
+        name: cbgpPeer2AcceptedPrefixes
+        
+      - tag: bgp:rejected    # in-prefixes-rejected
+        OID: .1.3.6.1.4.1.9.9.187.1.2.8.1.2
+        name: cbgpPeer2DeniedPrefixes
+        
+      - tag: bgp:sent    # out-prefixes
+        OID: .1.3.6.1.4.1.9.9.187.1.2.8.1.6
+        name: cbgpPeer2AdvertisedPrefixes
+        
+      # - tag: bgp:installed    # in-prefixes-active
+      #   OID: 
+      #   name: 
+        
+
+    metric_tags:
+
+    # OC: afi-safi-name
+    # https://github.com/openconfig/public/blob/master/release/models/bgp/openconfig-bgp-types.yang
+
+# cbgpPeer2AddrFamilyPrefixEntry OBJECT-TYPE
+#     INDEX {
+#         cbgpPeer2Type,
+#         cbgpPeer2RemoteAddr,
+#         cbgpPeer2AddrFamilyAfi,
+#         cbgpPeer2AddrFamilySafi
+
+    # This is only used to run script
+    - tag: bgp:fake
+      column:
+        OID: 1.3.6.1.4.1.9.9.187.1.2.8.1.1
+        name: cbgpPeer2AcceptedPrefixes
+        enum:
+        script: |
+          def main(n):
+
+            # Create neigbor table index
+            new_index_list = n.Index.rsplit(".", 2)
+            n["bgp:neighbor-table-index"] = str(new_index_list[0])
+
+            # extract afi and safi values from the index
+            afi = int(new_index_list[1])
+            safi = int(new_index_list[2])
+            fffi = "UNKNOWN"
+
+            # IPV4
+            if afi == 0 or safi == 0:
+              afi  = "UNKNOWN"
+              safi = "UNKNOWN"
+              fffi = "UNKNOWN"
+
+            elif afi == 1 or safi == 1:
+              afi  = "IPV4"
+              safi = "UNICAST"
+              fffi = "IPV4_UNICAST"
+
+            elif afi == 1 or safi == 2:
+              afi  = "IPV4"
+              safi = "MULTICAST"
+              fffi = "IPV4_MULTICAST"
+
+            elif afi == 1 or safi == 4:
+              afi  = "IPV4"
+              safi = "LABELED_UNICAST"
+              fffi = "IPV4_LABELED_UNICAST"
+
+            elif afi == 1 or safi == 128:
+              afi  = "IPV4"
+              safi = "L3VPN_UNICAST"
+              fffi = "L3VPN_IPV4_UNICAST"
+
+            elif afi == 1 or safi == 129:
+              afi  = "IPV4"
+              safi = "L3VPN_MULTICAST"
+              fffi = "L3VPN_IPV4_MULTICAST"
+
+            elif afi == 2 or safi == 1:
+              afi  = "IPV6"
+              safi = "UNICAST"
+              fffi = "IPV6_UNICAST"
+
+            elif afi == 2 or safi == 2:
+              afi  = "IPV6"
+              safi = "MULTICAST"
+              fffi = "IPV6_MULTICAST"
+
+            elif afi == 2 or safi == 4:
+              afi  = "IPV6"
+              safi = "LABELED_UNICAST"
+              fffi = "IPV6_LABELED_UNICAST"
+
+            elif afi == 2 or safi == 128:
+              afi  = "IPV6"
+              safi = "L3VPN_UNICAST"
+              fffi = "L3VPN_IPV6_UNICAST"
+
+            elif afi == 2 or safi == 129:
+              afi  = "IPV6"
+              safi = "L3VPN_MULTICAST"
+              fffi = "L3VPN_IPV6_MULTICAST"
+
+            elif afi == 25 or safi == 65:
+              afi  = "L2VPN"
+              safi = "VPLS"
+              fffi = "L2VPN_VPLS"
+
+            elif afi == 25 or safi == 75:
+              afi  = "L2VPN"
+              safi = "EVPN"
+              fffi = "L2VPN_EVPN"
+
+            elif afi == 1 or safi == 73:
+              afi  = "IPV4"
+              safi = "SRTE_POLICY"
+              fffi = "SRTE_POLICY_IPV4"
+
+            elif afi == 2 or safi == 73:
+              afi  = "IPV6"
+              safi = "SRTE_POLICY"
+              fffi = "SRTE_POLICY_IPV6"
+
+            elif afi == 1 or safi == 133:
+              afi  = "IPV4"
+              safi = "FLOWSPEC"
+              fffi = "IPV4_FLOWSPEC"
+
+            elif afi == 1 or safi == 134:
+              afi  = "IPV4"
+              safi = "FLOWSPEC_VPN"
+              fffi = "VPNV4_FLOWSPEC"
+
+            elif afi == 16388 or safi == 71:
+              afi  = "BGP-LS"
+              safi = "BGP-LS"
+              fffi = "LINKSTATE"
+
+            elif afi == 16388 or safi == 72:
+              afi  = "BGP-LS"
+              safi = "BGP-LS-VPN"
+              fffi = "LINKSTATE_VPN"
+
+            n["bgp:afi"] = str(afi)
+            n["bgp:safi"] = str(safi)
+            n["bgp:afi-safi-name"] = str(fffi)
+          
+            return None

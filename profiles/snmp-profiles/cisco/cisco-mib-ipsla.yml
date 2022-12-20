@@ -1,0 +1,174 @@
+---
+
+metrics:
+
+  # Cisco IP SLA functions
+  # A table of which contains the status of latest RTT operation.
+  # When the RttMonRttType is 'pathEcho', operations performed to the hops along the path will be recorded in this table.
+  - MIB: CISCO-RTTMON-MIB
+    table:
+      name: rttMonLatestRttOperTable
+      OID: 1.3.6.1.4.1.9.9.42.1.2.10
+    symbols:
+      # The completion time of the latest RTT operation successfully completed.
+      # The unit of this object will be microsecond when rttMonCtrlAdminRttType is set to 'jitter' and rttMonEchoAdminPrecision is set to 'microsecond'.
+      # Otherwise, the unit of this object will be millisecond.
+      - name: rttMonLatestRttOperCompletionTime
+        OID: 1.3.6.1.4.1.9.9.42.1.2.10.1.1
+      # The status of the conceptual RTT control row.
+      - name: rttMonCtrlAdminStatus
+        OID: 1.3.6.1.4.1.9.9.42.1.2.1.1.9
+        tag: rtt_operation_admin_status
+        enum:
+          active: 1
+          notInService: 2
+          notReady: 3
+          createAndGo: 4
+          createAndWait: 5
+          destroy: 6
+      # This object is set to true when an operation times out, and set to false when an operation completes under rttMonCtrlAdminTimeout.
+      - name: rttMonCtrlOperTimeoutOccurred
+        OID: 1.3.6.1.4.1.9.9.42.1.2.9.1.6
+        tag: rtt_operation_timed_out
+        enum:
+          true: 1
+          false: 2
+      # This object is changed by operation completion times over threshold, as defined by rttMonReactAdminThresholdType.
+      - name: rttMonCtrlOperOverThresholdOccurred
+        OID: 1.3.6.1.4.1.9.9.42.1.2.9.1.7
+        tag: rtt_operation_threshold_violated
+        enum:
+          true: 1
+          false: 2
+      # The RttMonOperStatus object is used to manage the 'state' of the probe that is implementing conceptual RTT control row. 
+      - tag: rtt_operation_oper_state
+        name: rttMonCtrlOperState
+        OID: 1.3.6.1.4.1.9.9.42.1.2.9.1.10
+        enum:
+          reset: 1
+          orderlyStop: 2
+          immediateStop: 3
+          pending: 4
+          inactive: 5
+          active: 6
+          restart: 7
+      # A sense code for the completion status of the latest RTT operation.
+      - name: rttMonLatestRttOperSense
+        OID: 1.3.6.1.4.1.9.9.42.1.2.10.1.2
+        tag: rtt_operation_sense
+        enum:
+          other: 0
+          ok: 1
+          disconnected: 2
+          overThreshold: 3
+          timeout: 4
+          busy: 5
+          notConnected: 6
+          dropped: 7
+          sequenceError: 8
+          verifyError: 9
+          applicationSpecific: 10
+          dnsServerTimeout: 11
+          tcpConnectTimeout: 12
+          httpTransactionTimeout: 13
+          dnsQueryError: 14
+          httpError: 15
+          error: 16
+          mplsLspEchoTxError: 17
+          mplsLspUnreachable: 18
+          mplsLspMalformedReq: 19
+          mplsLspReachButNotFEC: 20
+          enableOk: 21
+          enableNoConnect: 22
+          enableVersionFail: 23
+          enableInternalError: 24
+          enableAbort: 25
+          enableFail: 26
+          enableAuthFail: 27
+          enableFormatError: 28
+          enablePortInUse: 29
+          statsRetrieveOk: 30
+          statsRetrieveNoConnect: 31
+          statsRetrieveVersionFail: 32
+          statsRetrieveInternalError: 33
+          statsRetrieveAbort: 34
+          statsRetrieveFail: 35
+          statsRetrieveAuthFail: 36
+          statsRetrieveFormatError: 37
+          statsRetrievePortInUse: 38
+    metric_tags:
+      # A string which is used by a managing application to identify the RTT target.
+      - tag: rtt_operation_tag
+        column:
+          name: rttMonCtrlAdminTag
+          OID: 1.3.6.1.4.1.9.9.42.1.2.1.1.3
+      # A string which is used by a managing application to identify the RTT target.
+      # Setting this object will overwrite any description already set by rttMonCtrlAdminTag and vice-versa.
+      - tag: rtt_operation_long_tag
+        column:
+          name: rttMonCtrlAdminLongTag
+          OID: 1.3.6.1.4.1.9.9.42.1.2.1.1.12
+      # The type of RTT operation to be performed.
+      - tag: rtt_operation_type
+        column:
+          name: rttMonCtrlAdminRttType
+          OID: 1.3.6.1.4.1.9.9.42.1.2.1.1.4
+          enum:
+            echo: 1
+            pathEcho: 2
+            fileIO: 3
+            script: 4
+            udpEcho: 5
+            tcpConnect: 6
+            http: 7
+            dns: 8
+            jitter: 9
+            dlsw: 10
+            dhcp: 11
+            ftp: 12
+            voip: 13
+            rtp: 14
+            lspGroup: 15
+            icmpjitter: 16
+            lspPing: 17
+            lspTrace: 18
+            ethernetPing: 19
+            ethernetJitter: 20
+            lspPingPseudowire: 21
+            video: 22
+            y1731Delay: 23
+            y1731Loss: 24
+            mcastJitter: 25
+            fabricPathEcho: 26
+      # A string which specifies the address of the target.
+      - tag: rtt_echo_target_ip
+        column:
+          name: rttMonEchoAdminTargetAddress
+          OID: 1.3.6.1.4.1.9.9.42.1.2.2.1.2
+          conversion: hextoip
+      # This object represents the target's port number. This object is applicable to udpEcho, tcpConnect and jitter probes.
+      - tag: rtt_echo_target_port
+        column:
+          name: rttMonEchoAdminTargetPort
+          OID: 1.3.6.1.4.1.9.9.42.1.2.2.1.5
+      # A string which specifies the IP address of the source. This object is applicable to all probes except dns, dlsw and sna.
+      - tag: rtt_echo_source_address
+        column:
+          name: rttMonEchoAdminSourceAddress
+          OID: 1.3.6.1.4.1.9.9.42.1.2.2.1.6
+          conversion: hextoip
+      # This object represents the source's port number. If this object is not specified, the application will get a port allocated by the system. This object is applicable to all probes except dns, dlsw and sna.
+      - tag: rtt_echo_source_port
+        column:
+          name: rttMonEchoAdminSourcePort
+          OID: 1.3.6.1.4.1.9.9.42.1.2.2.1.7
+      # A string which specifies the ip address of the name-server. This object is applicable to dns probe only.
+      - tag: rtt_echo_name_server
+        column:
+          name: rttMonEchoAdminNameServer
+          OID: 1.3.6.1.4.1.9.9.42.1.2.2.1.12
+      # A string which represents the URL to which a HTTP probe should communicate with. This object is applicable to http probe only.
+      - tag: rtt_echo_url
+        column:
+          name: rttMonEchoAdminURL 
+          OID: 1.3.6.1.4.1.9.9.42.1.2.2.1.15

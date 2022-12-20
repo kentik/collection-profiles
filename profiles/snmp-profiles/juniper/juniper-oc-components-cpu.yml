@@ -1,0 +1,71 @@
+# juniper-oc-components-cpu.yml
+# SNMP: 
+#   - JUNIPER-MIB::jnxContentsTable
+#   - JUNIPER-MIB::jnxOperatingTable
+#   - JUNIPER-MIB::jnxFruTable
+# OC: /components/component/cpu/utilization/state
+# Kentik-path: /components/cpu/utilization
+
+# Profile intents to collect metadata and metrics about device components from JUNIPER-MIB and jnxContentsTable
+# Trying to normalize metrics to openconfig-platform:/components model as much as possible
+
+extends:
+  - oc-components_jnxContentsTable.yml
+
+metrics:
+
+  - MIB: /components
+    table:
+      OID: .1.3.6.1.4.1.2636.3.1.13.1.8    # JUNIPER-MIB::jnxOperatingTable
+      name: /cpu/utilization 
+      # oc-path: /components/component/cpu/utilization/state
+
+    symbols:
+
+      - tag: cpu-utilization:instant
+        OID: .1.3.6.1.4.1.2636.3.1.13.1.8
+        name: jnxOperatingCPU
+
+    metric_tags:
+      - tag: components:name
+        column:
+          OID: .1.3.6.1.4.1.2636.3.1.8.1.6
+          name: jnxContentsDescr
+   
+      - tag: components:type
+        column:
+          OID: .1.3.6.1.4.1.2636.3.1.15.1.6
+          name: jnxFruType
+          enum:
+            other: 1
+            clockGenerator: 2
+            flexiblePicConcentrator: 3
+            switchingAndForwardingModule: 4
+            controlBoard: 5
+            routingEngine: 6
+            powerEntryModule: 7
+            frontPanelModule: 8
+            switchInterfaceBoard: 9
+            processorMezzanineBoardForSIB: 10
+            portInterfaceCard: 11
+            craftInterfacePanel: 12
+            fan: 13
+            lineCardChassis: 14
+            forwardingEngineBoard: 15
+            protectedSystemDomain: 16
+            powerDistributionUnit: 17
+            powerSupplyModule: 18
+            switchFabricBoard: 19
+            adapterCard: 20
+            ftc: 21
+          
+      - tag: components:description
+        column:
+          OID: .1.3.6.1.4.1.2636.3.1.8.1.14
+          name: jnxContentsModel
+          
+      - tag: components:model
+        column:
+          OID: .1.3.6.1.4.1.2636.3.1.8.1.10
+          name: jnxContentsPartNo
+

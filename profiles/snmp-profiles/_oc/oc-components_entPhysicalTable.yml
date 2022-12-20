@@ -1,0 +1,200 @@
+# oc-components_entPhysicalTable.yml
+# SNMP: 
+#   - ENTITY-MIB::entPhysicalTable
+#   - ENTITY-STATE-MIB::entStateTable
+# OC: /components/component/state
+# Kentik-path: /components
+
+# Profile intents to collect metadata and metrics about device components from SNMP ENTITY-MIB and ENTITY-SENSOR-MIB
+# Trying to normalize metrics to openconfig-platform:/components model as much as possible
+
+metrics:
+
+  - MIB: /
+    table:
+      OID: .1.3.6.1.2.1.47.1.1.1    # ENTITY-MIB::entPhysicalTable
+      name: components # /components
+      # oc-path: /components/component/state
+
+    symbols:
+
+        # here just to have one metric
+      - tag: components:fru
+        OID: .1.3.6.1.2.1.47.1.1.1.1.16
+        name: entPhysicalIsFRU
+
+      # Admin status does not exist in OC
+      # This info comes from ENTITY-STATE-MIB which might not be supported 
+      - tag: components:entity-admin-status
+        OID: .1.3.6.1.2.1.131.1.1.1.2
+        name: entStateAdmin    # ENTITY-STATE-MIB::entStateTable
+        # description: 'Represents the various possible administrative states. 
+        # A value of 'locked' means the resource is administratively prohibited from use. 
+        # A value of 'shuttingDown' means that usage is administratively limited to current instances of use. 
+        # A value of 'unlocked' means the resource is not administratively prohibited from use. 
+        # A value of 'unknown' means that this resource is unable to report administrative state.
+        # Conversion to 
+        # unknown(1), locked(2), shuttingDown(3), unlocked(4)
+        enum:
+          unknown: 1
+          locked: 2
+          shuttingDown: 3
+          unlocked: 4
+
+      # This info comes from ENTITY-STATE-MIB which might not be supported 
+      # The OC component/state/oper-status definitions are in oc-platform-types:COMPONENT_OPER_STATUS
+      # identity COMPONENT_OPER_STATUS {
+      #   description
+      #     "Current operational status of a platform component";
+      # }
+      # identity ACTIVE {
+      #   base COMPONENT_OPER_STATUS;
+      #   description
+      #     "Component is enabled and active (i.e., up)";
+      # }
+      # identity INACTIVE {
+      #   base COMPONENT_OPER_STATUS;
+      #   description
+      #     "Component is enabled but inactive (i.e., down)";
+      # }
+      # identity DISABLED {
+      #   base COMPONENT_OPER_STATUS;
+      #   description
+      #     "Component is administratively disabled.";
+      # }
+
+      # Normalization to our "oper-status" value
+      # - UNKNOWN = 0: 
+      #   - if oper-status == 1 (unknown)
+      # - ACTIVE = 1: up
+      #   - if oper-status == 3 (enabled)
+      # - INACTIVE = 2: down
+      #   - if admin-status == 4 (unlocked) && (oper-status == 2 (disabled) || oper-status == 4 (testing) )
+      # - DISABLED = 3: disabled
+      #   - if admin-status == 2 (locked) || admin-status == 4 (testing)
+      - tag: components:entity-oper-status
+        OID: .1.3.6.1.2.1.131.1.1.1.3
+        name: entStateOper    # ENTITY-STATE-MIB::entStateTable
+        # description: 'Represents the possible values of operational states. 
+        # A value of 'disabled' means the resource is totally inoperable. 
+        # A value of 'enabled' means the resource is partially or fully operable. 
+        # A value of 'testing' means the resource is currently being tested and cannot therefore report whether it is operational or not. 
+        # A value of 'unknown' means that this resource is unable to report operational state.
+        # unknown(1), disabled(2), enabled(3), testing(4)'
+        enum: 
+          unknown: 1
+          disabled: 2
+          enabled: 3
+          testing: 4
+        script: |
+          def main(n):
+            # UNKNOWN
+            if n["components:entity-oper-status"] == 1:
+              n["components:oper-status"] = 0
+            # ACTIVE - up
+            if n["components:entity-oper-status"] == 3:
+              n["components:oper-status"] = 1
+            # INACTIVE - down
+            elif n["components:entity-admin-status"] == 4 and (n["components:entity-oper-status"] == 2 or n["components:entity-oper-status"] == 4):
+              n["components:oper-status"] = 2
+            # DISABLED
+            elif n["components:entity-admin-status"] == 2 or n["components:entity-admin-status"] == 4:
+              n["components:oper-status"] = 3
+            return None
+
+    metric_tags:
+      - tag: components:name
+        column:
+          OID: .1.3.6.1.2.1.47.1.1.1.1.2
+          name: entPhysicalDescr
+
+      # entPhysicalVendorType is the OID reference to the Vendor MIBs
+      # to many moving components to track for now
+      #- tag: components:vendor_type
+      #  column:
+      #    OID: .1.3.6.1.2.1.47.1.1.1.1.3
+      #    name: entPhysicalVendorType
+          
+      - tag: components:parent
+        column:
+          OID: .1.3.6.1.2.1.47.1.1.1.1.4
+          name: entPhysicalContainedIn
+          
+      - tag: components:type
+        column:
+          OID: .1.3.6.1.2.1.47.1.1.1.1.5
+          name: entPhysicalClass
+          enum:
+            OTHER: 1
+            UNKNOWN: 2
+            CHASSIS: 3
+            BACKPLANE: 4
+            CONTAINER: 5
+            POWER_SUPPLY: 6
+            FAN: 7
+            SENSOR: 8
+            MODULE: 9
+            PORT: 10
+            STACK: 11
+            CPU: 12
+
+      - tag: components:parent-position    # not in openconfig
+        column:
+          OID: .1.3.6.1.2.1.47.1.1.1.1.6
+          name: entPhysicalParentRelPos
+          
+      - tag: components:description
+        column:
+          OID: .1.3.6.1.2.1.47.1.1.1.1.7
+          name: entPhysicalName
+          
+      - tag: components:hardware-version
+        column:
+          OID: .1.3.6.1.2.1.47.1.1.1.1.8
+          name: entPhysicalHardwareRev
+          
+      - tag: components:firmware-version
+        column:
+          OID: .1.3.6.1.2.1.47.1.1.1.1.9
+          name: entPhysicalFirmwareRev
+          
+      - tag: components:software-version
+        column:
+          OID: .1.3.6.1.2.1.47.1.1.1.1.10
+          name: entPhysicalSoftwareRev
+          
+      - tag: components:serial-no
+        column:
+          OID: .1.3.6.1.2.1.47.1.1.1.1.11
+          name: entPhysicalSerialNum
+        
+      - tag: components:mfg-name
+        column:
+          OID: .1.3.6.1.2.1.47.1.1.1.1.12
+          name: entPhysicalMfgName
+          
+      - tag: components:model
+        column:
+          OID: .1.3.6.1.2.1.47.1.1.1.1.13
+          name: entPhysicalModelName
+
+      - tag: components:removable
+        column:
+          OID: .1.3.6.1.2.1.47.1.1.1.1.16
+          name: entPhysicalIsFru
+          enum:
+            "true": 1
+            "false": 2
+
+      # not used        
+      # - tag: components:alias
+      #   column:
+      #     OID: .1.3.6.1.2.1.47.1.1.1.1.14
+      #     name: entPhysicalAlias
+          
+      # - tag: components:asset_id
+      #   column:
+      #     OID: .1.3.6.1.2.1.47.1.1.1.1.15
+      #     name: entPhysicalAssetID
+          
+

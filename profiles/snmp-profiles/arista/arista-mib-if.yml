@@ -1,0 +1,26 @@
+---
+metrics:
+
+  # This table contains additional interface statistics not contained in the IF-MIB.
+  - MIB: ARISTA-IF-MIB
+    table:
+      name: aristaIfTable
+      OID: 1.3.6.1.4.1.30065.3.15.1.1
+    symbols:
+      - name: aristaIfInPktRate
+        OID: 1.3.6.1.4.1.30065.3.15.1.1.1.3
+      - name: aristaIfOutPktRate
+        OID: 1.3.6.1.4.1.30065.3.15.1.1.1.4
+      - name: aristaIfInOctetRate
+        OID: 1.3.6.1.4.1.30065.3.15.1.1.1.5
+      - name: aristaIfOutOctetRate
+        OID: 1.3.6.1.4.1.30065.3.15.1.1.1.6
+    metric_tags:
+      - column:
+          name: aristaIfRateInterval
+          OID: 1.3.6.1.4.1.30065.3.15.1.1.1.2
+      - MIB: IF-MIB
+        column:
+          OID: 1.3.6.1.2.1.31.1.1.1.1
+          name: ifName
+        tag: if_interface_name

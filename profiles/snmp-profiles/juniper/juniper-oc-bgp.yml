@@ -1,0 +1,481 @@
+# oc-bgp-neighbors_jnxBgpM2PeerTable.yml
+# SNMP: BGP4-V2-MIB-JUNIPER::jnxBgpM2PeerTable
+# OC: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/state
+# Kentik-path: /protocols/bgp/neighbors
+#
+# Profile intents to collect metadata and metrics about device interface from SNMP BGP4-V2-MIB-JUNIPER
+# Trying to normalize metrics to openconfig-bgp model as much as possible
+
+---
+
+extends:
+  - oc-bgp-global.yml
+
+metrics:
+
+# Description: BGP neighbors metadata and status
+# SNMP: BGP4-V2-MIB-JUNIPER::jnxBgpM2PeerTable
+# OC: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/state
+# Kentik-path: /protocols/bgp/neighbors
+
+  - MIB: /protocols   # openconfig-bgp
+    table:
+      OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1    # BGP4-V2-MIB-JUNIPER::jnxBgpM2PeerTable
+      name: bgp/neighbors # /protocols/bgp/neighbors
+      # oc-path: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/state
+
+    symbols:
+
+      - tag: bgp:session-state
+        OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.2
+        name: jnxBgpM2PeerState
+        enum:
+          IDLE: 1
+          CONNECT: 2
+          ACTIVE: 3
+          OPENSENT: 4
+          OPENCONFIRM: 5
+          ESTABLISHED: 6
+       
+      - tag: bgp:messages/received/UPDATE    # oc-path: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/state/messages/sent/UPDATE
+        OID: .1.3.6.1.4.1.2636.5.1.1.2.6.1.1.1
+        name: jnxBgpM2PeerInUpdates
+        
+      - tag: bgp:messages/sent/UPDATE
+        OID: .1.3.6.1.4.1.2636.5.1.1.2.6.1.1.2
+        name: jnxBgpM2PeerOutUpdates
+        
+        # we have to calculate NOTIFICATION = TOTAL - UPDATE
+      - tag: bgp:messages/received/TOTAL
+        OID: .1.3.6.1.4.1.2636.5.1.1.2.6.1.1.3
+        name: jnxBgpM2PeerInTotalMessages
+        
+      - tag: bgp:messages/sent/TOTAL
+        OID: .1.3.6.1.4.1.2636.5.1.1.2.6.1.1.4
+        name: jnxBgpM2PeerOutTotalMessages
+        
+      - tag: bgp:established-transitions
+        OID: .1.3.6.1.4.1.2636.5.1.1.2.6.1.1.5
+        name: jnxBgpM2PeerFsmEstablishedTrans
+
+      - tag: bgp:last-established
+        OID: .1.3.6.1.4.1.2636.5.1.1.2.4.1.1.1
+        name: jnxBgpM2PeerFsmEstablishedTime
+
+
+    metric_tags:
+
+      - tag: bgp:enabled
+        column:
+          OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.3
+          name: jnxBgpM2PeerStatus
+          enum:
+            "false": 1
+            "true": 2
+
+      - tag: bgp:neighbor-address
+        column:
+          OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.1
+          name: jnxBgpM2PeerIdentifier
+          conversion: hextoip
+
+      - tag: bgp:transport/local-address-type
+        column:
+          OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.6
+          name: jnxBgpM2PeerLocalAddrType
+          enum:
+            IPV4: 1
+            IPV6: 2
+
+      - tag: bgp:transport/local-address 
+        column:
+          OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.7
+          name: jnxBgpM2PeerLocalAddr
+          conversion: hextoip
+
+      - tag: bgp:transport/local-port
+        column:
+          OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.8
+          name: jnxBgpM2PeerLocalPort
+
+      - tag: bgp:local-as
+        column:
+          OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.9
+          name: jnxBgpM2PeerLocalAs
+
+      - tag: bgp:transport/remote-address-type
+        column:
+          OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.10
+          name: jnxBgpM2PeerRemoteAddrType
+          enum:
+            IPV4: 1
+            IPV6: 2
+
+      - tag: bgp:transport/remote-address
+        column:
+          OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.11
+          name: jnxBgpM2PeerRemoteAddr
+          conversion: hextoip
+
+      - tag: bgp:transport/remote-port
+        column:
+          OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.12
+          name: jnxBgpM2PeerRemotePort
+
+      - tag: bgp:peer-as
+        column:
+          OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.13
+          name: jnxBgpM2PeerRemoteAs
+
+      # Not in the OC - this is used to correlate the prefix counters in the different table        
+      - tag: bgp:prefix-table-index
+        column:
+          OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.14
+          name: jnxBgpM2PeerIndex
+
+      - tag: bgp:network-instance
+        column:
+          OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.15
+          name: jnxBgpM2PeerRoutingInstance
+
+      # oc-path: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/timers/state/keepalive-interval
+      - tag: bgp:timers/keepalive-interval
+        column:
+          OID: .1.3.6.1.4.1.2636.5.1.1.2.4.3.1.2
+          name: jnxBgpM2PeerKeepAlive
+
+      - tag: bgp:timers/hold-time
+        column:
+          OID: .1.3.6.1.4.1.2636.5.1.1.2.4.3.1.1
+          name: jnxBgpM2PeerHoldTime
+
+      - tag: bgp:timers/connect-retry
+        # oc-path: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/timers/state/connect-retry
+        column:
+          OID: .1.3.6.1.4.1.2636.5.1.1.2.4.2.1.1
+          name: jnxBgpM2PeerConnectRetryInterval
+
+
+# Description: BGP prefixes per neighbor
+# SNMP: BGP4-V2-MIB-JUNIPER::jnxBgpM2PrefixCountersTable
+# OC: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/afi-safis/afi-safi/state/prefixes
+# Kentik-path: /protocols/bgp/neighbors/prefixes
+
+  - MIB: /protocols
+    table:
+      OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1    # BGP4-V2-MIB-JUNIPER::jnxBgpM2PrefixCountersTable
+      name: bgp/neighbors/prefixes # /protocols/bgp/neighbors/prefixes
+      # oc-path: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/afi-safis/afi-safi/state/prefixes
+
+    symbols:
+
+      - tag: bgp:received-pre-policy    # in-prefixes
+        OID: .1.3.6.1.4.1.2636.5.1.1.2.6.2.1.7
+        name: jnxBgpM2PrefixInPrefixes
+        
+      - tag: bgp:received     # in-prefixes-accepted
+        OID: .1.3.6.1.4.1.2636.5.1.1.2.6.2.1.8
+        name: jnxBgpM2PrefixInPrefixesAccepted
+      
+      # rejected does not exist in OC
+      - tag: bgp:rejected    # in-prefixes-rejected
+        OID: .1.3.6.1.4.1.2636.5.1.1.2.6.2.1.9
+        name: jnxBgpM2PrefixInPrefixesRejected
+        
+      - tag: bgp:sent    # out-prefixes
+        OID: .1.3.6.1.4.1.2636.5.1.1.2.6.2.1.10
+        name: jnxBgpM2PrefixOutPrefixes
+        
+      - tag: bgp:installed    # in-prefixes-active
+        OID: .1.3.6.1.4.1.2636.5.1.1.2.6.2.1.11
+        name: jnxBgpM2PrefixInPreixesActive
+        
+
+    metric_tags:
+
+# OC: afi-safi-name
+# https://github.com/openconfig/public/blob/master/release/models/bgp/openconfig-bgp-types.yang
+
+# jnxBgpM2PrefixCountersEntry OBJECT-TYPE
+# SYNTAX JnxBgpM2PrefixCountersEntry
+# MAX-ACCESS not-accessible
+# STATUS current
+# DESCRIPTION
+# "Entry containing information about a bgp-peers prefix
+# counters."
+# INDEX {jnxBgpM2PeerIndex, jnxBgpM2PrefixCountersAfi, jnxBgpM2PrefixCountersSafi}
+
+    - tag: bgp:afi
+      column:
+        OID: .1.3.6.1.4.1.2636.5.1.1.2.6.2.1.1
+        name: jnxBgpM2PrefixCountersAfi
+        # enum:
+        #   UNKNOWN: 0
+        #   IPV4: 1
+        #   IPV6: 2
+        #   IPV4Z: 3
+        #   IPV6Z: 4
+        #   DNS: 16
+        #   L2VPN: 25
+        #   LINKSTATE: 16388
+
+    - tag: bgp:safi
+      column:
+        OID: .1.3.6.1.4.1.2636.5.1.1.2.6.2.1.2
+        name: jnxBgpM2PrefixCountersSafi
+        # enum:
+        #   UNICAST: 1
+        #   MULTICAST: 2
+        #   LABELED_UNICAST: 4
+        #   L3VPN_UNICAST: 128
+        #   L3VPN_MULTICAST: 129
+        #   FLOWSPEC: 133
+        #   FLOWSPEC_VPN: 134
+        #   MS-PW: 6
+        #   VPLS: 65
+        #   EVPN: 70
+        #   LINKSTATE: 71
+        #   VPN: 72
+        #   SRTE_POLICY: 73
+        script: |
+          def main(n):
+
+            # Creating a "prefix-table-index" which is a connection between neighbor table and prefix table
+            new_index_list = n.Index.split(".", 1)
+            n["bgp:neighbor-table-index"] = str(new_index_list[0])
+
+            # extract afi and safi values from the index
+            afi = n["bgp:afi"]
+            safi = n["bgp:safi"]
+            fffi = "UNKNOWN"
+
+            # IPV4
+            if afi == 0 or safi == 0:
+              afi  = "UNKNOWN"
+              safi = "UNKNOWN"
+              fffi = "UNKNOWN"
+
+            elif afi == 1 or safi == 1:
+              afi  = "IPV4"
+              safi = "UNICAST"
+              fffi = "IPV4_UNICAST"
+
+            elif afi == 1 or safi == 2:
+              afi  = "IPV4"
+              safi = "MULTICAST"
+              fffi = "IPV4_MULTICAST"
+
+            elif afi == 1 or safi == 4:
+              afi  = "IPV4"
+              safi = "LABELED_UNICAST"
+              fffi = "IPV4_LABELED_UNICAST"
+
+            elif afi == 1 or safi == 128:
+              afi  = "IPV4"
+              safi = "L3VPN_UNICAST"
+              fffi = "L3VPN_IPV4_UNICAST"
+
+            elif afi == 1 or safi == 129:
+              afi  = "IPV4"
+              safi = "L3VPN_MULTICAST"
+              fffi = "L3VPN_IPV4_MULTICAST"
+
+            elif afi == 2 or safi == 1:
+              afi  = "IPV6"
+              safi = "UNICAST"
+              fffi = "IPV6_UNICAST"
+
+            elif afi == 2 or safi == 2:
+              afi  = "IPV6"
+              safi = "MULTICAST"
+              fffi = "IPV6_MULTICAST"
+
+            elif afi == 2 or safi == 4:
+              afi  = "IPV6"
+              safi = "LABELED_UNICAST"
+              fffi = "IPV6_LABELED_UNICAST"
+
+            elif afi == 2 or safi == 128:
+              afi  = "IPV6"
+              safi = "L3VPN_UNICAST"
+              fffi = "L3VPN_IPV6_UNICAST"
+
+            elif afi == 2 or safi == 129:
+              afi  = "IPV6"
+              safi = "L3VPN_MULTICAST"
+              fffi = "L3VPN_IPV6_MULTICAST"
+
+            elif afi == 25 or safi == 65:
+              afi  = "L2VPN"
+              safi = "VPLS"
+              fffi = "L2VPN_VPLS"
+
+            elif afi == 25 or safi == 75:
+              afi  = "L2VPN"
+              safi = "EVPN"
+              fffi = "L2VPN_EVPN"
+
+            elif afi == 1 or safi == 73:
+              afi  = "IPV4"
+              safi = "SRTE_POLICY"
+              fffi = "SRTE_POLICY_IPV4"
+
+            elif afi == 2 or safi == 73:
+              afi  = "IPV6"
+              safi = "SRTE_POLICY"
+              fffi = "SRTE_POLICY_IPV6"
+
+            elif afi == 1 or safi == 133:
+              afi  = "IPV4"
+              safi = "FLOWSPEC"
+              fffi = "IPV4_FLOWSPEC"
+
+            elif afi == 1 or safi == 134:
+              afi  = "IPV4"
+              safi = "FLOWSPEC_VPN"
+              fffi = "VPNV4_FLOWSPEC"
+
+            elif afi == 16388 or safi == 71:
+              afi  = "BGP-LS"
+              safi = "BGP-LS"
+              fffi = "LINKSTATE"
+
+            elif afi == 16388 or safi == 72:
+              afi  = "BGP-LS"
+              safi = "BGP-LS-VPN"
+              fffi = "LINKSTATE_VPN"
+
+            n["bgp:afi"] = str(afi)
+            n["bgp:safi"] = str(safi)
+            n["bgp:afi-safi-name"] = str(fffi)         
+            return None
+
+
+# OC: afi-safi-name
+# https://github.com/openconfig/public/blob/master/release/models/bgp/openconfig-bgp-types.yang
+
+  # identity AFI_SAFI_TYPE {
+  #   description
+  #     "Base identity type for AFI,SAFI tuples for BGP-4";
+  #   reference "RFC4760 - multiprotocol extensions for BGP-4";
+  # }
+
+  # identity IPV4_UNICAST {
+  #   base AFI_SAFI_TYPE;
+  #   description
+  #     "IPv4 unicast (AFI,SAFI = 1,1)";
+  #   reference "RFC4760";
+  # }
+
+  # identity IPV6_UNICAST {
+  #   base AFI_SAFI_TYPE;
+  #   description
+  #     "IPv6 unicast (AFI,SAFI = 2,1)";
+  #   reference "RFC4760";
+  # }
+
+  # identity IPV4_LABELED_UNICAST {
+  #   base AFI_SAFI_TYPE;
+  #   description
+  #     "Labeled IPv4 unicast (AFI,SAFI = 1,4)";
+  #   reference "RFC3107";
+  # }
+
+  # identity IPV6_LABELED_UNICAST {
+  #   base AFI_SAFI_TYPE;
+  #   description
+  #     "Labeled IPv6 unicast (AFI,SAFI = 2,4)";
+  #   reference "RFC3107";
+  # }
+
+  # identity L3VPN_IPV4_UNICAST {
+  #   base AFI_SAFI_TYPE;
+  #   description
+  #     "Unicast IPv4 MPLS L3VPN (AFI,SAFI = 1,128)";
+  #   reference "RFC4364";
+  # }
+
+  # identity L3VPN_IPV6_UNICAST {
+  #   base AFI_SAFI_TYPE;
+  #   description
+  #     "Unicast IPv6 MPLS L3VPN (AFI,SAFI = 2,128)";
+  #   reference "RFC4659";
+  # }
+
+  # identity L3VPN_IPV4_MULTICAST {
+  #   base AFI_SAFI_TYPE;
+  #   description
+  #     "Multicast IPv4 MPLS L3VPN (AFI,SAFI = 1,129)";
+  #   reference "RFC6514";
+  # }
+
+  # identity L3VPN_IPV6_MULTICAST {
+  #   base AFI_SAFI_TYPE;
+  #   description
+  #     "Multicast IPv6 MPLS L3VPN (AFI,SAFI = 2,129)";
+  #   reference "RFC6514";
+  # }
+
+  # identity L2VPN_VPLS {
+  #   base AFI_SAFI_TYPE;
+  #   description
+  #     "BGP-signalled VPLS (AFI,SAFI = 25,65)";
+  #   reference "RFC4761";
+  # }
+
+  # identity L2VPN_EVPN {
+  #   base AFI_SAFI_TYPE;
+  #   description
+  #     "BGP MPLS Based Ethernet VPN (AFI,SAFI = 25,70)";
+  # }
+
+  # identity SRTE_POLICY_IPV4 {
+  #   base AFI_SAFI_TYPE;
+  #   description
+  #     "Segment Routing Traffic Engineering (SRTE) Policy
+  #     for IPv4 (AFI,SAFI = 1,73)";
+  # }
+
+  # identity SRTE_POLICY_IPV6 {
+  #   base AFI_SAFI_TYPE;
+  #   description
+  #     "Segment Routing Traffic Engineering (SRTE) Policy
+  #     for IPv6 (AFI,SAFI = 2,73)";
+  # }
+
+  # identity IPV4_FLOWSPEC {
+  #   base AFI_SAFI_TYPE;
+  #   description
+  #     "IPv4 dissemination of flow specification rules
+  #     (AFI,SAFI = 1,133)";
+  #   reference "RFC5575";
+  # }
+
+  # identity VPNV4_FLOWSPEC {
+  #   base AFI_SAFI_TYPE;
+  #   description
+  #     "IPv4 dissemination of flow specification rules
+  #     (AFI,SAFI = 1,134)";
+  #   reference "RFC5575";
+  # }
+
+  # identity LINKSTATE {
+  #   base AFI_SAFI_TYPE;
+  #   description
+  #     "BGP-LS (AFI,SAFI = 16388,71)";
+  #   reference "RFC7752";
+  # }
+
+  # identity LINKSTATE_VPN {
+  #   base AFI_SAFI_TYPE;
+  #   description
+  #     "BGP-LS-VPN (AFI,SAFI = 16388,72)";
+  #   reference "RFC7752";
+  # }
+
+  # identity LINKSTATE_SPF {
+  #   base AFI_SAFI_TYPE;
+  #   description
+  #     "BGP-LS SPF (AFI,SAFI = 16388,TBD)";
+  #   reference "draft-ietf-lsvr-bgp-spf";
+  # }

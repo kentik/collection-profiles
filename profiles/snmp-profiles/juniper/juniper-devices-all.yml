@@ -1,0 +1,61 @@
+# sysDescr examples from Juniper devices:
+# 
+# Juniper Networks, Inc. qfx5100-48s-6q Ethernet Switch, kernel JUNOS 14.1X53-D40.8, Build date: 2016-11-09 02:17:36 UTC Copyright (c) 1996-2016 Juniper Networks, Inc.
+# Juniper Networks, Inc. JNP204 [MX204] internet router, kernel JUNOS 17.4R2.4, Build date: 2018-08-17 02:23:20 UTC Copyright (c) 1996-2018 Juniper Networks, Inc.
+# Juniper Networks, Inc. mx104 internet router, kernel JUNOS 13.3R9.13, Build date: 2016-03-01 09:06:52 UTC Copyright (c) 1996-2016 Juniper Networks, Inc.
+# Juniper Networks, Inc. mx80-48t internet router, kernel JUNOS 13.3R9.13, Build date: 2016-03-01 09:06:52 UTC Copyright (c) 1996-2016 Juniper Networks, Inc.
+# Juniper Networks, Inc. qfx5100-24q-2p Ethernet Switch, kernel JUNOS 14.1X53-D35.3, Build date: 2016-02-29 23:39:06 UTC Copyright (c) 1996-2016 Juniper Networks, Inc.
+
+
+# lldpLocSysDesc examples:
+# Juniper MX104 Internet Backbone Router
+# Juniper Virtual Chassis Switch
+# Juniper Networks, Inc. qfx5100-48s-6q Ethernet Switch, kernel JUNOS 14.1X53-D40.8, Build date: 2016-11-09 02:17:36 UTC Copyright (c) 1996-2016 Juniper Networks, Inc.
+# Juniper Networks, Inc. mx80-48t , version 13.3R9.13 Build date: 2016-03-01 08:36:50 UTC 
+# Juniper Networks, Inc. JNP204 [MX204] internet router, kernel JUNOS 17.4R2.4, Build date: 2018-08-17 02:23:20 UTC Copyright (c) 1996-2018 Juniper Networks, Inc.
+
+
+---
+extends:
+  # Generic MIB2 profiles
+  - if-mib.yml
+  - system-mib.yml
+
+  # Normalized from standard MIBs to Kentik OC data models
+  - oc-system-uptime.yml
+  - oc-lldp.yml
+  - oc-ospf.yml
+  - oc-address-ipv4_ipAddrTable.yml
+  - oc-address-ipv6_ipv6AddrTable.yml
+  # - oc-components_entPhysicalTable.yml           # can be enabled if Juniper device supports ENTITY-MIB
+  # - oc-components-sensor_entPhySensorTable.yml   # can be enabled if Juniper device supports ENTITY-SENSOR-MIB
+
+  # Juniper to OC
+  - juniper-oc-system-cpus-all.yml
+  - juniper-oc-system-memory.yml
+  - juniper-oc-components.yml
+  - juniper-oc-components-cpu.yml
+  - juniper-oc-components-memory.yml
+  - juniper-oc-components-temperature.yml
+  - juniper-oc-bgp.yml
+
+sysobjectid:
+  - 1.3.6.1.4.1.2636.*
+
+metric_tags:
+
+  # Tags that go into 'default' measurement name used for general device metadata
+  # Special parsing of the sysDescr to extract additional metadata
+  - column:
+      OID: .1.3.6.1.2.1.1.1.0
+      name: juniper:description
+      #conversion: "regexp:(?P<sysDescr>(?P<vendor>Juniper Networks), Inc\\. (?P<model>\\S+).*kernel (?P<os_name>\\S+).*\\s(?P<os_version>[\\w\\-]+\\.[\\w\\-]+\\.[\\w\\-]+).*)"
+      conversion: 'regexp:(?P<sysDescr>(?P<vendor>Juniper Networks), Inc\. (?P<model>\S+).*kernel (?P<os_name>\S+).*\s(?P<os_version>[\w\-]+\.[\w\-]+\.?[\w\-]+).*)'
+  # Vendor specific OIDS
+  - column:
+      OID: .1.3.6.1.4.1.2636.3.1.3.0
+      name: serial_number
+  - column:
+      OID: .1.3.6.1.4.1.2636.3.1.2.0
+      name: product_name
+
