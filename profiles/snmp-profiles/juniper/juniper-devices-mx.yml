@@ -3,7 +3,6 @@ extends:
   - juniper-devices-all.yml
 
   # Device specific collection:
-  - oc-bgp-neighbors_jnxBgpM2PeerTable.yml    # BGP normalized to OC
   - juniper-mib-firewall-counters.yml
   - juniper-mib-virtual-chassis.yml
 

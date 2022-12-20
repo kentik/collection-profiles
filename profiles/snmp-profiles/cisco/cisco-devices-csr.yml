@@ -4,10 +4,11 @@
 # http://www.circitor.fr/Mibs/Html/C/CISCO-MEMORY-POOL-MIB.php
 ---
 extends:
+
   # Cisco all devices
   - cisco-devices-all.yml
-  - cisco-mib-process.yml
   - cisco-mib-ipsla.yml
+
 
 sysobjectid:
   - 1.3.6.1.4.1.9.1.1537    # Cisco CSR 1000V

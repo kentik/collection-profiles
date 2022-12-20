@@ -2,7 +2,7 @@
 # Note that this device does not provide a memory OID
 ---
 extends:
-  - cisco-all-devices.yml
+  - cisco-devices-all.yml
 
 provider: kentik-load-balancer
 

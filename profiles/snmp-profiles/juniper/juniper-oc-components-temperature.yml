@@ -10,7 +10,7 @@
 # Trying to normalize metrics to openconfig-platform:/components model as much as possible
 
 extends:
-  - oc-components_jnxContentsTable.yml
+  - juniper-oc-components.yml
 
 metrics:
 
