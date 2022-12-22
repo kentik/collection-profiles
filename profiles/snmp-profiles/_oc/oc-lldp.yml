@@ -32,13 +32,13 @@ metrics:
           OID: .1.0.8802.1.1.2.1.3.1
           name: lldpLocChassisIdSubtype
           enum: 
-            CHASSIS_COMPONENT: 1
-            INTERFACE_ALIAS: 2
-            PORT_COMPONENT: 3
-            MAC_ADDRESS: 4
-            NETWORK_ADDRESS: 5
-            INTERFACE_NAME: 6
-            LOCAL: 7
+            chassis_component: 1
+            interface_alias: 2
+            port_component: 3
+            mac_address: 4
+            network_address: 5
+            interface_name: 6
+            local: 7
 
       - tag: lldp:chassis-id
         column:
@@ -94,13 +94,13 @@ metrics:
           OID: .1.0.8802.1.1.2.1.3.7.1.2
           name: lldpLocPortIdSubtype
           enum: 
-            INTERFACE_ALIAS: 1
-            PORT_COMPONENT: 2
-            MAC_ADDRESS: 3
-            NETWORK_ADDRESS: 4
-            INTERFACE_NAME: 5
-            AGENT_CIRCUIT_ID: 6
-            LOCAL: 7
+            interface_alias: 1
+            port_component: 2
+            mac_address: 3
+            network_address: 4
+            interface_name: 5
+            agent_circuit_id: 6
+            local: 7
 
 
 
@@ -125,13 +125,13 @@ metrics:
           OID: 1.0.8802.1.1.2.1.4.1.1.4
           name: lldpRemChassisIdSubtype
           enum: 
-            CHASSIS_COMPONENT: 1
-            INTERFACE_ALIAS: 2
-            PORT_COMPONENT: 3
-            MAC_ADDRESS: 4
-            NETWORK_ADDRESS: 5
-            INTERFACE_NAME: 6
-            LOCAL: 7
+            chassis_component: 1
+            interface_alias: 2
+            port_component: 3
+            mac_address: 4
+            network_address: 5
+            interface_name: 6
+            local: 7
 
       - tag: lldp-neighbor:chassis-id
         column:
@@ -144,13 +144,13 @@ metrics:
           OID: 1.0.8802.1.1.2.1.4.1.1.6
           name: lldpRemPortIdSubtype
           enum: 
-            INTERFACE_ALIAS: 1
-            PORT_COMPONENT: 2
-            MAC_ADDRESS: 3
-            NETWORK_ADDRESS: 4
-            INTERFACE_NAME: 5
-            AGENT_CIRCUIT_ID: 6
-            LOCAL: 7
+            interface_alias: 1
+            port_component: 2
+            mac_address: 3
+            network_address: 4
+            interface_name: 5
+            agent_circuit_id: 6
+            local: 7
 
       # The string value used to identify the port component associated with the remote system.
       - tag: lldp-neighbor:port-id

@@ -76,23 +76,23 @@ metrics:
           script: |
             def main(n):
               if n.Index == "1.1.0.0":
-                n["components:type"] = "CHASSIS"
+                n["components:type"] = "chassis"
               elif n["index"] == "1.1.0.0":
-                n["components:type"] = "CHASSIS"
+                n["components:type"] = "chassis"
               elif n["components:original-type"] == "fan":
-                n["components:type"] = "FAN"
+                n["components:type"] = "fan"
               elif n["components:original-type"] == "routingEngine":
-                n["components:type"] = "OTHER"
+                n["components:type"] = "other"
               elif n["components:original-type"] == "powerEntryModule" or n["components:original-type"] == "powerSupplyModule":
-                n["components:type"] = "POWER_SUPPLY"
+                n["components:type"] = "power_supply"
               elif n["components:original-type"] == "controlBoard":
-                n["components:type"] = "BACKPLANE"
+                n["components:type"] = "backplane"
               elif n["components:original-type"] == "flexiblePicConcentrator":
-                n["components:type"] = "CONTAINER"
+                n["components:type"] = "container"
               elif n["components:original-type"] == "portInterfaceCard":
-                n["components:type"] = "MODULE"
+                n["components:type"] = "module"
               else:
-                n["components:type"] = "OTHER"
+                n["components:type"] = "other"
               return None
 
 

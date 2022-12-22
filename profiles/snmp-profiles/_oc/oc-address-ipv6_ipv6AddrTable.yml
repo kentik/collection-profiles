@@ -42,14 +42,14 @@ metrics:
         OID: .1.3.6.1.2.1.55.1.8.1.5    # ipv6AddrStatus
         name: ipv6AddrStatus
         enum:
-          PREFERRED: 1
-          DEPRECATED: 2
-          INVALID: 3
-          INACCESSIBLE: 4
-          UNKNOWN: 5 
-          TENTATIVE: 6
-          DUPLICATE: 7
-          OPTIMISTIC: 8
+          preferred: 1
+          deprecated: 2
+          invalid: 3
+          inaccessible: 4
+          unknown: 5 
+          tentative: 6
+          duplicate: 7
+          optimistic: 8
     
     # - tag: origin
     
