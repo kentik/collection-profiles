@@ -113,10 +113,10 @@ metrics:
           OID: 1.3.6.1.2.1.14.7.1.4
           name: ospfIfType
           enum: 
-            BROADCAST_NETWORK: 1
-            NON_BROADCAST_NETWORK: 2
-            POINT_TO_POINT_NETWORK: 3
-            POINT_TO_MULTIPOINT_NETWORK: 5
+            broadcast_network: 1
+            non_broadcast_network: 2
+            point_to_point_network: 3
+            point_to_multipoint_network: 5
       
       - tag: ospf:priority
         column:
@@ -149,9 +149,9 @@ metrics:
           OID: 1.3.6.1.2.1.14.7.1.20
           name: ospfIfAuthType
           enum:
-            NONE: 0
-            SIMPLE_PASSWORD: 1
-            MD5: 2
+            none: 0
+            simple_password: 1
+            md5: 2
 
       - tag: ospf:designated-router
         # oc-path: /network-instances/network-instance/protocols/protocol/ospfv2/areas/area/interfaces/interface/neighbors/neighbor/state/designated-router
@@ -183,14 +183,14 @@ metrics:
         OID: 1.3.6.1.2.1.14.10.1.6
         name: ospfNbrState
         enum:
-          DOWN: 1
-          ATTEMPT: 2
-          INIT: 3
-          TWO_WAY: 4
-          EXSTART: 5
-          EXCHANGE: 6
-          LOADING: 7
-          FULL: 8
+          down: 1
+          attempt: 2
+          init: 3
+          two_way: 4
+          exstart: 5
+          exchange: 6
+          loading: 7
+          full: 8
 
       - tag: ospf-neighbor:state-changes
         OID: 1.3.6.1.2.1.14.10.1.7
