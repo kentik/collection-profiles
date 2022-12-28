@@ -297,102 +297,100 @@ metrics:
               safi = "UNKNOWN"
               fffi = "UNKNOWN"
 
-            elif afi == 1 or safi == 1:
+            elif afi == 1 and safi == 1:
               afi  = "IPV4"
               safi = "UNICAST"
               fffi = "IPV4_UNICAST"
 
-            elif afi == 1 or safi == 2:
+            elif afi == 1 and safi == 2:
               afi  = "IPV4"
               safi = "MULTICAST"
               fffi = "IPV4_MULTICAST"
 
-            elif afi == 1 or safi == 4:
+            elif afi == 1 and safi == 4:
               afi  = "IPV4"
               safi = "LABELED_UNICAST"
               fffi = "IPV4_LABELED_UNICAST"
 
-            elif afi == 1 or safi == 128:
+            elif afi == 1 and safi == 128:
               afi  = "IPV4"
               safi = "L3VPN_UNICAST"
               fffi = "L3VPN_IPV4_UNICAST"
 
-            elif afi == 1 or safi == 129:
+            elif afi == 1 and safi == 129:
               afi  = "IPV4"
               safi = "L3VPN_MULTICAST"
               fffi = "L3VPN_IPV4_MULTICAST"
 
-            elif afi == 2 or safi == 1:
+            elif afi == 2 and safi == 1:
               afi  = "IPV6"
               safi = "UNICAST"
               fffi = "IPV6_UNICAST"
 
-            elif afi == 2 or safi == 2:
+            elif afi == 2 and safi == 2:
               afi  = "IPV6"
               safi = "MULTICAST"
               fffi = "IPV6_MULTICAST"
 
-            elif afi == 2 or safi == 4:
+            elif afi == 2 and safi == 4:
               afi  = "IPV6"
               safi = "LABELED_UNICAST"
               fffi = "IPV6_LABELED_UNICAST"
 
-            elif afi == 2 or safi == 128:
+            elif afi == 2 and safi == 128:
               afi  = "IPV6"
               safi = "L3VPN_UNICAST"
               fffi = "L3VPN_IPV6_UNICAST"
 
-            elif afi == 2 or safi == 129:
+            elif afi == 2 and safi == 129:
               afi  = "IPV6"
               safi = "L3VPN_MULTICAST"
               fffi = "L3VPN_IPV6_MULTICAST"
 
-            elif afi == 25 or safi == 65:
+            elif afi == 25 and safi == 65:
               afi  = "L2VPN"
               safi = "VPLS"
               fffi = "L2VPN_VPLS"
 
-            elif afi == 25 or safi == 75:
+            elif afi == 25 and safi == 75:
               afi  = "L2VPN"
               safi = "EVPN"
               fffi = "L2VPN_EVPN"
 
-            elif afi == 1 or safi == 73:
+            elif afi == 1 and safi == 73:
               afi  = "IPV4"
               safi = "SRTE_POLICY"
               fffi = "SRTE_POLICY_IPV4"
 
-            elif afi == 2 or safi == 73:
+            elif afi == 2 and safi == 73:
               afi  = "IPV6"
               safi = "SRTE_POLICY"
               fffi = "SRTE_POLICY_IPV6"
 
-            elif afi == 1 or safi == 133:
+            elif afi == 1 and safi == 133:
               afi  = "IPV4"
               safi = "FLOWSPEC"
               fffi = "IPV4_FLOWSPEC"
 
-            elif afi == 1 or safi == 134:
+            elif afi == 1 and safi == 134:
               afi  = "IPV4"
               safi = "FLOWSPEC_VPN"
               fffi = "VPNV4_FLOWSPEC"
 
-            elif afi == 16388 or safi == 71:
+            elif afi == 16388 and safi == 71:
               afi  = "BGP-LS"
               safi = "BGP-LS"
               fffi = "LINKSTATE"
 
-            elif afi == 16388 or safi == 72:
+            elif afi == 16388 and safi == 72:
               afi  = "BGP-LS"
               safi = "BGP-LS-VPN"
               fffi = "LINKSTATE_VPN"
 
             n["bgp:afi"] = str(afi)
             n["bgp:safi"] = str(safi)
-            n["bgp:afi-safi-name"] = str(fffi)
-          
+            n["bgp:afi-safi-name"] = str(fffi)         
             return None
-
 
 
 
