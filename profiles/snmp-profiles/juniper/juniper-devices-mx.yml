@@ -3,7 +3,7 @@ extends:
   - juniper-devices-all.yml
 
   # Device specific collection:
-  - juniper-mib-firewall-counters.yml
+  #- juniper-mib-firewall-counters.yml
   - juniper-mib-virtual-chassis.yml
 
 

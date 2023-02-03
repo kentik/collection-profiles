@@ -4,15 +4,15 @@
 # Kentik-path: /components/cpu/utilization
 ---
 
-extends:
-  - oc-components_entPhysicalTable.yml
+#extends:
+#  - oc-components_entPhysicalTable.yml
 
 metrics:
 
-  - MIB: /components
+  - MIB: /components/cpu
     table:
       OID: .1.3.6.1.4.1.9.9.109.1.1.1    # CISCO-PROCESS-MIB::cpmCPUTotalTable
-      name: cpu/utilization 
+      name: /utilization
     symbols:
 
       # The overall CPU busy percentage in the last 1 minute period.
@@ -31,7 +31,11 @@ metrics:
           name: cpmCPUTotalPhysicalIndex
         # The script will overwrite the index of the table with the value from cpmCPUTotalPhysicalIndex
         # which is the index value from the ENTITY-MIB
-          script: |
-            def main(n):
-              n["Index"] = str(n["cisco-components-cpu:physical-index"])
-              return None
+          # script: |
+          #   def main(n):
+          #     print("testing components cpu")
+          #     print(n)
+          #     n["Index"] = str(n["cisco-components-cpu:physical-index"])
+          #     print("after index change")
+          #     print(n)
+          #     return None
