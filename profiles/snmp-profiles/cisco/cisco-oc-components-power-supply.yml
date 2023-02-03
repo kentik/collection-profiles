@@ -4,8 +4,8 @@
 # Kentik-path: /components/power-supply
 ---
 
-extends:
-  - oc-components_entPhysicalTable.yml
+#extends:
+#  - oc-components_entPhysicalTable.yml
 
 metrics:
 

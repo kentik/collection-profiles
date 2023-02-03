@@ -1,0 +1,106 @@
+# oc-components_entPhysicalTable.yml
+# SNMP: 
+#   - ENTITY-MIB::entPhysicalTable
+#   - ENTITY-STATE-MIB::entStateTable
+# OC: /components/component/state
+# Kentik-path: /components
+
+# Profile intents to collect metadata and metrics about device components from SNMP ENTITY-MIB and ENTITY-SENSOR-MIB
+# Trying to normalize metrics to openconfig-platform:/components model as much as possible
+
+extends:
+  - oc-components_entPhysicalTable.yml
+
+metrics:
+
+  - MIB: /
+    table:
+      OID: .1.3.6.1.2.1.47.1.1.1    # ENTITY-MIB::entPhysicalTable
+      name: components # /components
+      # oc-path: /components/component/state
+
+    symbols:
+
+      - tag: cisco-components:module-oper-status
+        OID: .1.3.6.1.4.1.9.9.117.1.2.1.1.2
+        name: cefcModuleOperStatus    # CISCO-ENTITY-FRU-CONTROL-MIB::cefcModuleTable
+      # Normalization to our "oper-status" value:
+      # - UNKNOWN = 0: 
+      # - ACTIVE = 1: up
+      # - INACTIVE = 2: down
+      # - DISABLED = 3: disabled
+        script: |
+          def main(n):
+            if n["cisco-components:module-oper-status"]:
+              status = int(n["cisco-components:module-oper-status"])
+              if status == 1:
+                n["components:oper-status"] = 0   # UNKNOWN
+              elif status == 2 or status == 4:
+                n["components:oper-status"] = 1   # ACTIVE
+              elif status == 3:
+                n["components:oper-status"] = 3   # DISABLED
+              else:
+                n["components:oper-status"] = 2   # INACTIVE
+            return None
+
+        # Operational module states. Valid values are : 
+        # - unknown(1) Module is not in one of other states
+        # normal operational states: 
+        # - ok(2) Module is operational. 
+        # - disabled(3) Module is administratively disabled. 
+        # - okButDiagFailed(4) Module is operational but there is some diagnostic information available. 
+        # transitional states: 
+        # - boot(5) Module is currently in the process of bringing up image. After boot, it starts its operational software and transitions to the appropriate state. 
+        # - selfTest(6) Module is performing selfTest. 
+        # failure states: 
+        # - failed(7) Module has failed due to some condition not stated above. 
+        # - missing(8) Module has been provisioned, but it is missing 
+        # - mismatchWithParent(9) Module is not compatible with parent entity. Module has not been provisioned and wrong type of module is plugged in. This state can be cleared by plugging in the appropriate module. 
+        # - mismatchConfig(10) Module is not compatible with the current configuration. Module was correctly provisioned earlier, however the module was replaced by an incompatible module. This state can be resolved by clearing the configuration, or replacing with the appropriate module. 
+        # - diagFailed(11) Module diagnostic test failed due to some hardware failure. 
+        # - dormant(12) Module is waiting for an external or internal event to become operational. 
+        # - outOfServiceAdmin(13) module is administratively set to be powered on but out of service. 
+        # - outOfServiceEnvTemp(14)Module is powered on but out of service, due to environmental temperature problem. An out-o-service module consumes less power thus will cool down the board. 
+        # - poweredDown(15) Module is in powered down state. 
+        # - poweredUp(16) Module is in powered up state. 
+        # - powerDenied(17) System does not have enough power in power budget to power on this module. 
+        # - powerCycled(18) Module is being power cycled. 
+        # - okButPowerOverWarning(19) Module is drawing more power than allocated to this module. The module is still operational but may go into a failure state. This state may be caused by misconfiguration of power requirements (especially for inline power). 
+        # - okButPowerOverCritical(20) Module is drawing more power than this module is designed to handle. The module is still operational but may go into a failure state and could potentially take the system down. This state may be caused by gross misconfi- guration of power requirements (especially for inline power). 
+        # - syncInProgress(21) Synchronization in progress. In a high availability system there will be 2 control modules, active and standby. This transitional state specifies the synchronization of data between the active and standby modules. 
+        # - upgrading(22) Module is upgrading. 
+        # - okButAuthFailed(23) Module is operational but did not pass hardware integrity verification. 
+        # - mdr(24) Module is undergoing a Minimum Disruptive Restart (MDR) upgrade. 
+        # firmware download states: 
+        # - fwMismatchFound(25) Mistmatch found between current firmware version and the firmware version in the system image. 
+        # - fwDownloadSuccess(26) Module firmware download succeeded. 
+        # - fwDownloadFailure(27) Module firmware download failed.
+
+
+      - tag: cisco-components:fantray-oper-status
+        OID: .1.3.6.1.4.1.9.9.117.1.4.1.1.1
+        name: cefcFanTrayOperStatus    # CISCO-ENTITY-FRU-CONTROL-MIB::cefcFanTrayStatusTable
+      # The operational state of the fan or fan tray:
+      # - unknown(1) - unknown
+      # - up(2) - powered on
+      # - down(3) - powered down
+      # - warning(4) - partial failure needs replacement as soon as possible.
+      # Normalization to our "oper-status" value:
+      # - UNKNOWN = 0: 
+      # - ACTIVE = 1: up
+      # - INACTIVE = 2: down
+      # - DISABLED = 3: disabled
+        script: |
+          def main(n):
+            print(n)
+            if n["cisco-components:fantray-oper-status"]:
+              status = int(n["cisco-components:fantray-oper-status"])
+              if status == 1:
+                n["components:oper-status"] = 0   # UNKNOWN
+              elif status == 2:
+                n["components:oper-status"] = 1   # ACTIVE
+              elif status == 3:
+                n["components:oper-status"] = 3   # DISABLED
+              else:
+                n["components:oper-status"] = 2   # INACTIVE
+            return None

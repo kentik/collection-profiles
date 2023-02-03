@@ -4,8 +4,8 @@
 # Kentik-path: /components/memory
 ---
 
-extends:
-  - oc-components_entPhysicalTable.yml
+#extends:
+#  - oc-components_entPhysicalTable.yml
 
 metrics:
 

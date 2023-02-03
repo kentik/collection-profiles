@@ -76,25 +76,46 @@ metrics:
           script: |
             def main(n):
               if n.Index == "1.1.0.0":
-                n["components:type"] = "chassis"
+                n["components:type"] = "CHASSIS"
               elif n["index"] == "1.1.0.0":
-                n["components:type"] = "chassis"
-              elif n["components:original-type"] == "fan":
-                n["components:type"] = "fan"
-              elif n["components:original-type"] == "routingEngine":
-                n["components:type"] = "other"
-              elif n["components:original-type"] == "powerEntryModule" or n["components:original-type"] == "powerSupplyModule":
-                n["components:type"] = "power_supply"
-              elif n["components:original-type"] == "controlBoard":
-                n["components:type"] = "backplane"
-              elif n["components:original-type"] == "flexiblePicConcentrator":
-                n["components:type"] = "container"
-              elif n["components:original-type"] == "portInterfaceCard":
-                n["components:type"] = "module"
+                n["components:type"] = "CHASSIS"
+              elif n["components:original-type"] == "FAN":
+                n["components:type"] = "FAN"
+              elif n["components:original-type"] == "ROUTINGENGINE":
+                n["components:type"] = "OTHER"
+              elif n["components:original-type"] == "POWERENTRYMODULE" or n["components:original-type"] == "POWERSUPPLYMODULE":
+                n["components:type"] = "POWER_SUPPLY"
+              elif n["components:original-type"] == "CONTROLBOARD":
+                n["components:type"] = "BACKPLANE"
+              elif n["components:original-type"] == "FLEXIBLEPICCONCENTRATOR":
+                n["components:type"] = "CONTAINER"
+              elif n["components:original-type"] == "PORTINTERFACECARD":
+                n["components:type"] = "MODULE"
               else:
-                n["components:type"] = "other"
+                n["components:type"] = "OTHER"
               return None
 
+          #script: |
+            # def main(n):
+            #   if n.Index == "1.1.0.0":
+            #     n["components:type"] = "chassis"
+            #   elif n["index"] == "1.1.0.0":
+            #     n["components:type"] = "chassis"
+            #   elif n["components:original-type"] == "fan":
+            #     n["components:type"] = "fan"
+            #   elif n["components:original-type"] == "routingEngine":
+            #     n["components:type"] = "other"
+            #   elif n["components:original-type"] == "powerEntryModule" or n["components:original-type"] == "powerSupplyModule":
+            #     n["components:type"] = "power_supply"
+            #   elif n["components:original-type"] == "controlBoard":
+            #     n["components:type"] = "backplane"
+            #   elif n["components:original-type"] == "flexiblePicConcentrator":
+            #     n["components:type"] = "container"
+            #   elif n["components:original-type"] == "portInterfaceCard":
+            #     n["components:type"] = "module"
+            #   else:
+            #     n["components:type"] = "other"
+            #   return None
 
       # entPhysicalVendorType is the OID reference to the Vendor MIBs
       # to many moving components to track for now
@@ -123,27 +144,27 @@ metrics:
           OID: .1.3.6.1.4.1.2636.3.1.15.1.6
           name: jnxFruType
           enum:
-            other: 1
-            clockGenerator: 2
-            flexiblePicConcentrator: 3
-            switchingAndForwardingModule: 4
-            controlBoard: 5
-            routingEngine: 6
-            powerEntryModule: 7
-            frontPanelModule: 8
-            switchInterfaceBoard: 9
-            processorMezzanineBoardForSIB: 10
-            portInterfaceCard: 11
-            craftInterfacePanel: 12
-            fan: 13
-            lineCardChassis: 14
-            forwardingEngineBoard: 15
-            protectedSystemDomain: 16
-            powerDistributionUnit: 17
-            powerSupplyModule: 18
-            switchFabricBoard: 19
-            adapterCard: 20
-            ftc: 21
+            OTHER: 1
+            CLOCKGENERATOR: 2
+            FLEXIBLEPICCONCENTRATOR: 3
+            SWITCHINGANDFORWARDINGMODULE: 4
+            CONTROLBOARD: 5
+            ROUTINGENGINE: 6
+            POWERENTRYMODULE: 7
+            FRONTPANELMODULE: 8
+            SWITCHINTERFACEBOARD: 9
+            PROCESSORMEZZANINEBOARDFORSIB: 10
+            PORTINTERFACECARD: 11
+            CRAFTINTERFACEPANEL: 12
+            FAN: 13
+            LINECARDCHASSIS: 14
+            FORWARDINGENGINEBOARD: 15
+            PROTECTEDSYSTEMDOMAIN: 16
+            POWERDISTRIBUTIONUNIT: 17
+            POWERSUPPLYMODULE: 18
+            SWITCHFABRICBOARD: 19
+            ADAPTERCARD: 20
+            FTC: 21
 
           
       - tag: components:description

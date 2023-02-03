@@ -11,10 +11,10 @@ extends:
   - oc-ospf.yml
   - oc-address-ipv4_ipAddrTable.yml
   - oc-address-ipv6_ipv6AddrTable.yml
-  - oc-components_entPhysicalTable.yml
-  - oc-components-sensor_entPhySensorTable.yml
 
   # Cisco OC normalized
+  - cisco-oc-components.yml
+  - cisco-oc-components-sensor.yml
   - cisco-oc-system-cpus.yml
   - cisco-oc-system-memory.yml
   - cisco-oc-components-cpu.yml
@@ -30,7 +30,7 @@ extends:
 
 
 sysobjectid:
-  - 1.3.6.1.4.1.9.*    # Cisco
+  - 1.3.6.1.4.1.9.*    # Cisco generic
 
 metric_tags:
 
