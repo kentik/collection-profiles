@@ -4,75 +4,88 @@
 # https://mibs.observium.org/mib/UCD-DISKIO-MIB/
 ---
 
+extends:
+  - ucd-oc-system-cpus-all.yml
+  - ucd-oc-system-memory.yml
+
+
 metrics:
-  # The 1 minute load averages as an integer. This is computed by taking the floating point loadaverage value and multiplying by 100, then converting the value to an integer.
-  # Polled at 60s to support anomaly detection
-  - MIB: UCD-SNMP-MIB
-    symbol:
-      name: laLoadInt1Min
-      OID: 1.3.6.1.4.1.2021.10.1.5.1
-      poll_time_sec: 60
-      tag: CPU
 
-  # The total amount of real/physical memory installed on this host.
-  # Polled at 60s to support anomaly detection
   - MIB: UCD-SNMP-MIB
-    symbol:
-      name: memTotalReal
-      OID: 1.3.6.1.4.1.2021.4.5.0
-      poll_time_sec: 60
-      tag: MemoryTotal
+    table:
+      OID: 1.3.6.1.4.1.2021.10
+      name: laTable
+    symbols:
 
-  # The amount of real/physical memory currently unused or available.
-  # Polled at 60s to support anomaly detection
-  - MIB: UCD-SNMP-MIB
-    symbol:
-      name: memAvailReal
-      OID: 1.3.6.1.4.1.2021.4.6.0
-      poll_time_sec: 60
-      tag: MemoryFree
+      - OID: .1.3.6.1.4.1.2021.10.1.4
+        name: laLoadConfig_temp
 
-  # The total amount of swap space configured for this host.
-  - MIB: UCD-SNMP-MIB
-    symbol:
-      name: memTotalSwap
-      OID: 1.3.6.1.4.1.2021.4.3.0
+      - OID: .1.3.6.1.4.1.2021.10.1.5
+        name: laLoadInt
+        script: |
+          load('math.star', 'math')
+          def main(n):
+            config = float(n["ks_laLoadConfig_temp"])
+            load_int = float(laLoadInt)
+            n.pop("laLoadConfig_temp")
+            n["laLoadConfig"] = config
+            n["laLoadFloat"] = float(load_int / 100)
+            return None
 
-  # The amount of swap space currently unused or available.
-  - MIB: UCD-SNMP-MIB
-    symbol:
-      name: memAvailSwap
-      OID: 1.3.6.1.4.1.2021.4.4.0
+      # it seems that ktranslate does not support reading SNMP Float type 
+      #- OID: .1.3.6.1.4.1.2021.10.1.6
+      #  name: laLoadFloat
+    metric_tags:
+      - tag: laNames
+        column:
+          name: laNames
+          OID: .1.3.6.1.4.1.2021.10.1.2
 
-  # The total amount of memory free or available for use on this host. This value typically covers both real memory and swap space or virtual memory.
-  - MIB: UCD-SNMP-MIB
-    symbol:
-      name: memTotalFree
-      OID: 1.3.6.1.4.1.2021.4.11.0
 
-  # The minimum amount of swap space expected to be kept free or available during normal operation of this host.
-  - MIB: UCD-SNMP-MIB
-    symbol:
-      name: memMinimumSwap
-      OID: 1.3.6.1.4.1.2021.4.12.0
 
-  # The total amount of real or virtual memory currently allocated for use as shared memory.
   - MIB: UCD-SNMP-MIB
-    symbol:
-      name: memShared
-      OID: 1.3.6.1.4.1.2021.4.13.0
+    table:
+      OID: 1.3.6.1.4.1.2021.4
+      name: memory
+    symbols:
 
-  # The total amount of real or virtual memory currently allocated for use as memory buffers.
-  - MIB: UCD-SNMP-MIB
-    symbol:
-      name: memBuffer
-      OID: 1.3.6.1.4.1.2021.4.14.0
+        # The total amount of real/physical memory installed on this host.
+      - name: memTotalReal
+        OID: 1.3.6.1.4.1.2021.4.5
 
-  # The total amount of real or virtual memory currently allocated for use as cached memory.
-  - MIB: UCD-SNMP-MIB
-    symbol:
-      name: memCached
-      OID: 1.3.6.1.4.1.2021.4.15.0
+        # The amount of real/physical memory currently unused or available.
+      - name: memAvailReal
+        OID: 1.3.6.1.4.1.2021.4.6
+
+        # The total amount of swap space configured for this host.
+      - name: memTotalSwap
+        OID: 1.3.6.1.4.1.2021.4.3
+
+        # The amount of swap space currently unused or available.
+      - name: memAvailSwap
+        OID: 1.3.6.1.4.1.2021.4.4
+
+        # The total amount of memory free or available for use on this host. This value typically covers both real memory and swap space or virtual memory.
+      - name: memTotalFree
+        OID: 1.3.6.1.4.1.2021.4.11
+
+        # The minimum amount of swap space expected to be kept free or available during normal operation of this host.
+      - name: memMinimumSwap
+        OID: 1.3.6.1.4.1.2021.4.12
+
+        # The total amount of real or virtual memory currently allocated for use as shared memory.
+      - name: memShared
+        OID: 1.3.6.1.4.1.2021.4.13
+
+        # The total amount of real or virtual memory currently allocated for use as memory buffers.
+      - name: memBuffer
+        OID: 1.3.6.1.4.1.2021.4.14
+
+        # The total amount of real or virtual memory currently allocated for use as cached memory.
+      - name: memCached
+        OID: 1.3.6.1.4.1.2021.4.15
+
+
 
   # Disk watching information. Partions to be watched are configured by the snmpd.conf file of the agent.
   - MIB: UCD-SNMP-MIB
@@ -118,6 +131,8 @@ metrics:
         column:
           OID: 1.3.6.1.4.1.2021.9.1.3
           name: dskDevice
+
+
 
   # Table of IO devices and how much data they have read/written.
   - MIB: UCD-DISKIO-MIB
