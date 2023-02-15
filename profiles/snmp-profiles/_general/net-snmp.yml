@@ -26,6 +26,18 @@ matches:
   "avamar": dell-avamar.yml
   # "#1 smp": sonicwall-sma.yml      # This match proved to be too generic for most purposes
   "^linux ubnt": unifi-switch.yml    # This may need to be removed later for being too generic
+  #"^linux": linux.yml
 
 sysobjectid:
   - 1.3.6.1.4.1.8072.*
+
+
+metric_tags:
+
+  # Tags that go into 'default' measurement name used for general device metadata
+  # Special parsing of the sysDescr to extract additional metadata
+  # Linux device-hostname 5.15.0-60-generic #66-Ubuntu SMP Fri Jan 20 14:29:49 UTC 2023 x86_64
+  - column:
+      OID: .1.3.6.1.2.1.1.1.0
+      name: linux:description
+      conversion: 'regexp:(?P<sysDescr>(?P<vendor>Linux) (?P<hostname>\S+) (?P<os_version>\S+) (?P<os_name>\S+).*\s(?P<model>\S+))'

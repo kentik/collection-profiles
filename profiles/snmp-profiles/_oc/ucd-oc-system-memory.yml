@@ -1,0 +1,39 @@
+# file: juniper-oc-system-memory.yml
+# SNMP: JUNIPER-MIB::jnxOperatingTable
+# OC: /system/memory
+# Kentik-path: /system/memory
+---
+
+metrics:
+
+# This is a single memory info
+# OC paths for memory, no path for utilization
+# oc-path: openconfig-system:/system/memory/state/physical
+# oc-path: openconfig-system:/system/memory/state/reserved
+# oc-path: openconfig-system:/system/memory/state/used
+# oc-path: openconfig-system:/system/memory/state/free
+  - MIB: "/system"
+    table:
+      OID: 1.3.6.1.4.1.999999.2636.4
+      name: "memory"
+    symbols:
+
+        # The total amount of real/physical memory installed on this host.
+      - name: oc-memory:available
+        OID: .1.3.6.1.4.1.2021.4.5.0
+
+        # The amount of real/physical memory currently unused or available.
+      - name: oc-memory:free
+        OID: .1.3.6.1.4.1.2021.4.6.0
+        script: |
+          def main(n):
+            n["oc-memory:available"] = int(n["oc-memory:available"]) * 1024
+            n["oc-memory:free"] = int(n["oc-memory:free"]) * 1024
+            n["oc-memory:utilized"] = n["oc-memory:available"] - n["oc-memory:free"]
+            n["oc-memory:utilization"] = int(float(100) * float(n["oc-memory:utilized"]) / float(n["oc-memory:available"]))
+            return None
+
+    metric_tags:
+      - column:
+          name: index
+          OID: 1.3.6.1.6.3.1135.6169.0
