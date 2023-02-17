@@ -17,4 +17,4 @@ jobs:
                --header 'X-GitHub-Api-Version: 2022-11-28' \
                --header 'Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}' \
                --header 'Content-Type: application/json' \
-               --data '{"ref":"kentik", "inputs":{"message":"Publish Kentik for collection-profiles @ ${{ env.GITHUB_SHA }}"}}'
+               --data '{"ref":"kentik", "inputs":{"message":"Publish Kentik for collection-profiles @ ${{ github.sha }}"}}'
