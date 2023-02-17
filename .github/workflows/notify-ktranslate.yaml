@@ -1,0 +1,18 @@
+name: Notify Ktranslate
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+        curl --location 'https://api.github.com/repos/kentik/ktranslate/actions/workflows/publish-kentik.yml/dispatches' \
+             --header 'Accept: application/vnd.github+json' \
+             --header 'X-GitHub-Api-Version: 2022-11-28' \
+             --header 'Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}' \
+             --header 'Content-Type: application/json' \
+             --data '{"ref":"kentik"}'
