@@ -92,7 +92,6 @@ metrics:
       # - DISABLED = 3: disabled
         script: |
           def main(n):
-            print(n)
             if n["cisco-components:fantray-oper-status"]:
               status = int(n["cisco-components:fantray-oper-status"])
               if status == 1:

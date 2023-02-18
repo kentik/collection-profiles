@@ -18,19 +18,19 @@ metrics:
     symbols:
 
       - OID: .1.3.6.1.4.1.2021.10.1.4
-        name: laLoadConfig_temp
+        name: laLoadConfigtemp
 
       - OID: .1.3.6.1.4.1.2021.10.1.5
         name: laLoadInt
         script: |
-          load('math.star', 'math')
           def main(n):
-            config = float(n["ks_laLoadConfig_temp"])
-            load_int = float(laLoadInt)
-            n.pop("laLoadConfig_temp")
+            config = float(n["ks_laLoadConfigtemp"])
+            load_int = float(n["laLoadInt"])
+            n.pop("laLoadConfigtemp")
             n["laLoadConfig"] = config
             n["laLoadFloat"] = float(load_int / 100)
             return None
+
 
       # it seems that ktranslate does not support reading SNMP Float type 
       #- OID: .1.3.6.1.4.1.2021.10.1.6
