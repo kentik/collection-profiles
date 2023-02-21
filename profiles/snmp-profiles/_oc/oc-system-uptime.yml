@@ -16,6 +16,10 @@ metrics:
         # Adding boot-time in nanosec
         script: |
           load('math.star', 'math')
+          load('time.star', 'time')
           def main(n):
-            n["boot-time"] = int(float(n["oc-system:uptime-sec"] * math.pow(10, 9)))
+            boot_time_sec = int(time.now().unix) - int(n["oc-system:uptime-sec"])
+            # n["boot-time-sec"] = boot_time_sec
+            n["boot-time"] = int(float(boot_time_sec * math.pow(10, 9)))
             return None
+

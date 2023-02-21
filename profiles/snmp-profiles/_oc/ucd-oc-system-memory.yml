@@ -1,5 +1,5 @@
-# file: juniper-oc-system-memory.yml
-# SNMP: JUNIPER-MIB::jnxOperatingTable
+# file: 
+# SNMP:  UCD-SNMP-MIB::memory
 # OC: /system/memory
 # Kentik-path: /system/memory
 ---

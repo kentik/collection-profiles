@@ -1,5 +1,5 @@
-# file: juniper-oc-system-cpus-all.yml
-# SNMP: JUNIPER-MIB::jnxOperatingTable
+# file:
+# SNMP: UCD-SNMP-MIB::laTable
 # OC: /system/cpus/cpu[index="ALL"]/state/total/instant
 # Kentik-path: /system/cpus
 ---
@@ -15,6 +15,7 @@ metrics:
       name: "cpus"
     symbols:
 
+      # assumes that the index .1 in the laTable is the CPU load on 1 min avg
       - tag: oc-cpus:laLoadInt
         #tag: oc-cpus:total/instant
         OID: .1.3.6.1.4.1.2021.10.1.5.1
@@ -26,7 +27,6 @@ metrics:
         script: |
           load('math.star', 'math')
           def main(n):
-            print(n)
             config = float(n["ks_oc-cpus:laLoadConfig"])
             load_int = float(n["oc-cpus:laLoadInt"])
             n["oc-cpus:total/instant"] = int(load_int / config)
