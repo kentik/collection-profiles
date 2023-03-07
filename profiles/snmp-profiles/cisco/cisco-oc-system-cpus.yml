@@ -15,8 +15,13 @@ metrics:
       name: "cpus"
     symbols:
       - tag: oc-system-cpus-all:total/instant
-        OID: .1.3.6.1.4.1.9.2.1.58.0
+        OID: 1.3.6.1.4.1.9.2.1.58.0
         name: avgBusy5
+        allow_duplicate: true                   # OPTIONAL: Used to allow multiple metrics with the same tag in a single profile; ktranslate will only ship the one that responds
+      - tag: oc-system-cpus-all:total/instant
+        OID: 1.3.6.1.4.1.9.9.109.1.1.1.1.7.1
+        name: cpmCPUTotal1minRev
+        allow_duplicate: true                   # OPTIONAL: Used to allow multiple metrics with the same tag in a single profile; ktranslate will only ship the one that responds
     metric_tags:
       - column:
           # this is static value assignment for string "ALL"

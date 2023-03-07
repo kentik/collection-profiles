@@ -1,0 +1,43 @@
+---
+# CISCO-IPSEC-FLOW-MONITOR-MIB
+
+metrics:
+
+# IPSec Phase 1 global stats
+  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
+    table:
+      OID: 1.3.6.1.4.1.9.9.171.1.2.1
+      name: cikeGlobalStats
+    symbols:
+
+      # The number of currently active IPsec Phase-1 IKE Tunnels
+      - OID: 1.3.6.1.4.1.9.9.171.1.2.1.1
+        name: cikeGlobalActiveTunnels
+      - OID: 1.3.6.1.4.1.9.9.171.1.2.1.3
+        name: cikeGlobalInOctets
+      - OID: 1.3.6.1.4.1.9.9.171.1.2.1.4
+        name: cikeGlobalInPkts
+      - OID: 1.3.6.1.4.1.9.9.171.1.2.1.11
+        name: cikeGlobalOutOctets
+      - OID: 1.3.6.1.4.1.9.9.171.1.2.1.12
+        name: cikeGlobalOutPkts
+
+
+# IPSec Phase 2 global stats
+  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
+    table:
+      OID: 1.3.6.1.4.1.9.9.171.1.3.1
+      name: cipSecGlobalStats
+    symbols:
+
+      # The number of currently active IPsec Phase-1 IKE Tunnels
+      - OID: 1.3.6.1.4.1.9.9.171.1.3.1.1
+        name: cipSecGlobalActiveTunnels
+      - OID: 1.3.6.1.4.1.9.9.171.1.3.1.4
+        name: cipSecGlobalHcInOctets
+      - OID: 1.3.6.1.4.1.9.9.171.1.3.1.9
+        name: cipSecGlobalInPkts
+      - OID: 1.3.6.1.4.1.9.9.171.1.3.1.17
+        name: cipSecGlobalHcOutOctets
+      - OID: 1.3.6.1.4.1.9.9.171.1.3.1.22
+        name: cipSecGlobalOutPkts
