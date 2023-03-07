@@ -3,10 +3,38 @@
 # http://oid-info.com/get/1.3.6.1.4.1.9.9.392
 # http://oid-info.com/get/1.3.6.1.2.1.99.1.1
 ---
-extends:
-  - cisco-devices-all.yml
+provider: cisco_asa
 
-provider: kentik-firewall
+extends:
+  # Generic MIB2 profiles
+  - system-mib.yml
+  - if-mib.yml
+
+  # Normalized from standard MIBs to Kentik OC data models
+  - oc-system-uptime.yml
+  - oc-lldp.yml
+  #- oc-ospf.yml
+  - oc-address-ipv4_ipAddrTable.yml
+  - oc-address-ipv6_ipv6AddrTable.yml
+
+  # Cisco OC normalized
+  - cisco-oc-components.yml
+  - cisco-oc-components-sensor.yml
+  - cisco-oc-system-cpus.yml
+  - cisco-oc-system-memory.yml
+  - cisco-oc-components-cpu.yml
+  - cisco-oc-components-memory.yml
+  - cisco-oc-components-memory_cempMemPoolTable.yml
+  - cisco-oc-components-power-supply.yml
+  - cisco-oc-components-fan.yml
+  - cisco-oc-components-temperature.yml
+  #- cisco-oc-bgp.yml
+
+  # Cisco ASA specific MIBs
+  - cisco-mib-remote-access-monitor.yml
+  - cisco-mib-firewall.yml
+  - cisco-mib-unified-firewall.yml
+  - cisco-mib-ipsec-flow.yml
 
 sysobjectid:
   - 1.3.6.1.4.1.9.1.669     #  Cisco ASA 5510
@@ -137,130 +165,28 @@ sysobjectid:
   - 1.3.6.1.4.1.9.1.2306    #  Cisco ASA 5516td
   - 1.3.6.1.4.1.9.1.2663    #  Cisco Firepower 1120 Security Appliance
 
-metrics:
-# Hardware failover
-  - MIB: CISCO-FIREWALL-MIB
-    table:
-      OID: 1.3.6.1.4.1.9.9.147.1.2.1.1
-      name: cfwHardwareStatusTable
-    symbols:
-      - OID: 1.3.6.1.4.1.9.9.147.1.2.1.1.1.3
-        name: cfwHardwareStatusValue
-        enum:
-          other: 1
-          up: 2
-          down: 3
-          error: 4
-          overTemp: 5
-          busy: 6
-          noMedia: 7
-          backup: 8
-          active: 9
-          standby: 10
-        tag: failover_status
-    metric_tags:
-      - column:
-          OID: 1.3.6.1.4.1.9.9.147.1.2.1.1.1.2
-          name: cfwHardwareInformation
-        tag: failover_description
-      - column:
-          OID: 1.3.6.1.4.1.9.9.147.1.2.1.1.1.4
-          name: cfwHardwareStatusDetail
-        tag: failover_status_detail
 
-# Firewall connections
-  - MIB: CISCO-FIREWALL-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.147.1.2.2.2.1.5.40.6
-      name: cfwConnectionStatValue
-      tag: current_firewall_connections
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.147.1.2.2.2.1.5.40.7
-      name: cfwConnectionStatValue
-      tag: highest_firewall_connections
-  - MIB: CISCO-REMOTE-ACCESS-MONITOR-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.392.1.4.1.2.0
-      name: crasNumDeclinedSessions
-  - MIB: CISCO-REMOTE-ACCESS-MONITOR-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.392.1.3.1.0
-      name: crasNumSessions
-  - MIB: CISCO-REMOTE-ACCESS-MONITOR-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.392.1.3.3.0
-      name: crasNumUsers
-  - MIB: CISCO-REMOTE-ACCESS-MONITOR-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.392.1.4.1.3.0
-      name: crasNumSetupFailInsufResources
-  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.171.1.3.1.1.0
-      name: cipSecGlobalActiveTunnels
-  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.171.1.3.1.4.0
-      name: cipSecGlobalHcInOctets
-  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.171.1.3.1.17.0
-      name: cipSecGlobalHcOutOctets
 
-# Phase 1 IPSEC metrics
-  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.171.1.2.1.1.0
-      name: cikeGlobalActiveTunnels
-  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.171.1.2.1.3.0
-      name: cikeGlobalInOctets
-  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.171.1.2.1.4.0
-      name: cikeGlobalInPkts
-  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.171.1.2.1.11.0
-      name: cikeGlobalOutOctets
-  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.171.1.2.1.12.0
-      name: cikeGlobalOutPkts
+metric_tags:
 
-# Phase 2 IPSEC metrics
-  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.171.1.3.1.1.0
-      name: cipSecGlobalActiveTunnels
-  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.171.1.3.1.4.0
-      name: cipSecGlobalHcInOctets
-  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.171.1.3.1.9.0
-      name: cipSecGlobalInPkts
-  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.171.1.3.1.17.0
-      name: cipSecGlobalHcOutOctets
-  - MIB: CISCO-IPSEC-FLOW-MONITOR-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.171.1.3.1.22.0
-      name: cipSecGlobalOutPkts
+  # Tags that go into 'default' measurement name used for general device metadata
+  # Special parsing of the sysDescr to extract additional metadata
 
-# URL Filters
-  - MIB: CISCO-UNIFIED-FIREWALL-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.491.1.3.1.2.0
-      name: cufwUrlfRequestsNumProcessed
-  - MIB: CISCO-UNIFIED-FIREWALL-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.491.1.3.1.5.0
-      name: cufwUrlfRequestsNumAllowed
-  - MIB: CISCO-UNIFIED-FIREWALL-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.9.9.491.1.3.1.6.0
-      name: cufwUrlfRequestsNumDenied
+  - column:
+      OID: .1.3.6.1.2.1.1.1.0
+      name: cisco-asa:description
+      # Cisco Adaptive Security Appliance Version 9.12(4)26
+      conversion: 'regexp:(?P<sysDescr>Cisco Adaptive Security Appliance Version (?P<os_version>.*))'
+
+  - column:
+      OID: 1.3.6.1.6.3.1135.6169.Cisco
+      name: cisco-asa:vendor
+
+  - column:
+      OID: 1.3.6.1.6.3.1135.6169.ASA
+      name: cisco-asa:os_name
+
+  # Vendor specific OIDS
+  - column:
+      OID: .1.3.6.1.2.1.47.1.1.1.1.11.1
+      name: serial_number
