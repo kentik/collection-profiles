@@ -7,7 +7,7 @@ extends:
   - juniper-mib-virtual-chassis.yml
 
 
-#provider: kentik-router
+provider: Juniper MX series
 
 sysobjectid:
   - 1.3.6.1.4.1.2636.1.1.1.2.21     # MX960
@@ -40,3 +40,10 @@ sysobjectid:
   - 1.3.6.1.4.1.2636.1.1.1.4.154.*
   - 1.3.6.1.4.1.2636.1.1.1.2.155
   - 1.3.6.1.4.1.2636.1.1.1.4.155.*
+
+metric_tags:
+
+  # Product name
+  - column:
+      OID: 1.3.6.1.6.3.1135.6169.Juniper MX series
+      name: product_name

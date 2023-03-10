@@ -1,0 +1,41 @@
+# file: 
+# SNMP:  F5-BIGIP-SYSTEM-MIB
+# OC: /system/memory
+# Kentik-path: /system/memory
+---
+
+metrics:
+
+# This is a single memory info
+# OC paths for memory, no path for utilization
+# oc-path: openconfig-system:/system/memory/state/physical
+# oc-path: openconfig-system:/system/memory/state/reserved
+# oc-path: openconfig-system:/system/memory/state/used
+# oc-path: openconfig-system:/system/memory/state/free
+  - MIB: "/system"
+    table:
+      OID: 1.3.6.1.4.1.3375.2.1.1.2.1.44
+      name: "memory"
+    symbols:
+
+      # The total memory available in bytes for TMM (Traffic Management Module)
+      - tag: oc-memory:available
+        OID: 1.3.6.1.4.1.3375.2.1.1.2.1.44
+        name: sysStatMemoryTotal
+
+      # The memory in use in bytes for TMM (Traffic Management Module)
+      - tag: oc-memory:utilized
+        OID: 1.3.6.1.4.1.3375.2.1.1.2.1.45
+        name: sysStatMemoryUsed
+        script: |
+          def main(n):
+            n["oc-memory:available"] = int(n["oc-memory:available"])
+            n["oc-memory:utilized"] = int(n["oc-memory:utilized"])
+            n["oc-memory:free"] = n["oc-memory:available"] - n["oc-memory:utilized"]
+            n["oc-memory:utilization"] = int(float(100) * float(n["oc-memory:utilized"]) / float(n["oc-memory:available"]))
+            return None
+
+    metric_tags:
+      - column:
+          name: index
+          OID: 1.3.6.1.6.3.1135.6169.0

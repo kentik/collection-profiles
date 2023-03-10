@@ -10,7 +10,7 @@ extends:
   - juniper-mib-firewall-counters.yml
   #- juniper-mib-virtual-chassis.yml
 
-#provider: kentik-firewall
+provider: Juniper SRX series
 
 sysobjectid:
   - 1.3.6.1.4.1.2636.1.1.1.2.26
@@ -60,70 +60,10 @@ sysobjectid:
   - 1.3.6.1.4.1.2636.1.1.1.2.164
   - 1.3.6.1.4.1.2636.1.1.1.4.164.*
 
-metrics:
-  - MIB: JUNIPER-DCU-MIB
-    table:
-      OID: 1.3.6.1.4.1.2636.3.6.2
-      name: jnxDcuStatsTable
-    symbols:
-      - OID: 1.3.6.1.4.1.2636.3.6.2.1.4
-        name: jnxDcuStatsPackets
-      - OID: 1.3.6.1.4.1.2636.3.6.2.1.5
-        name: jnxDcuStatsBytes
-    metric_tags:
-      - column:
-          OID: 1.3.6.1.2.1.31.1.1.1.1
-          name: ifName
-        table: ifXTable
-        tag: if_interface_name
-        index_transform:
-          - start: 0
-            end: 0
-      - column:
-          OID: 1.3.6.1.4.1.2636.3.6.2.1.2
-          name: jnxDcuStatsAddrFamily
-        tag: address_family
-      - column:
-          OID: 1.3.6.1.4.1.2636.3.6.2.1.3
-          name: jnxDcuStatsClassName
-        tag: destination_class_name
-  - MIB: JUNIPER-SCU-MIB
-    table:
-      OID: 1.3.6.1.4.1.2636.3.16.1.1
-      name: jnxScuStatsTable
-    symbols:
-      - OID: 1.3.6.1.4.1.2636.3.16.1.1.1.4
-        name:  jnxScuStatsPackets
-      - OID: 1.3.6.1.4.1.2636.3.16.1.1.1.5
-        name: jnxScuStatsBytes
-    metric_tags:
-      - column:
-          OID: 1.3.6.1.2.1.31.1.1.1.1
-          name: ifName
-        table: ifXTable
-        tag: if_interface_name
-        index_transform:
-          - start: 0
-            end: 0
-      - column:
-          OID: 1.3.6.1.4.1.2636.3.16.1.1.1.2
-          name: jnxScuStatsAddrFamily
-        tag: address_family
-  - MIB: JUNIPER-USERFIREWALL-MIB
-    table:
-      OID: 1.3.6.1.4.1.2636.3.89.1.1.3
-      name: jnxUserFwLDAPTable
-    symbols:
-      - OID: 1.3.6.1.4.1.2636.3.89.1.1.3.1.3
-        name: jnxUserFwLDAPTotalQuery
-      - OID: 1.3.6.1.4.1.2636.3.89.1.1.3.1.4
-        name: jnxUserFwLDAPFailedQuery
-    metric_tags:
-      - column:
-          OID:  1.3.6.1.4.1.2636.3.89.1.1.3.1.1
-          name: jnxUserFwLDAPDomain
-        tag: ldap_domain_name
-      - column:
-          OID: 1.3.6.1.4.1.2636.3.89.1.1.3.1.2
-          name: jnxUserFwLDAPHost
-        tag: ldap_host
+
+metric_tags:
+
+  # Product name
+  - column:
+      OID: 1.3.6.1.6.3.1135.6169.Juniper SRX series
+      name: product_name

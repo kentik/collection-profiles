@@ -1,98 +1,231 @@
-# https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/manuals/product/bigip-external-monitoring-implementations-12-1-2/12.html
-# http://www.circitor.fr/Mibs/Html/F/F5-BIGIP-SYSTEM-MIB.php
-# http://www.circitor.fr/Mibs/Html/F/F5-BIGIP-LOCAL-MIB.php
 ---
+
 extends:
   - system-mib.yml
   - if-mib.yml
 
-provider: kentik-load-balancer
+  # F5 specific
+  - f5-oc-system-cpus.yml
+  - f5-oc-system-memory.yml
+
+provider: f5
 
 sysobjectid:
-  - 1.3.6.1.4.1.3375.2.1.2.4.*
-  - 1.3.6.1.4.1.3375.2.1.3.4.*     # F5
-  - 1.3.6.1.4.1.3375.2.1.3.4.43    # BIG-IP Virtual Edition
-  - 1.3.6.1.4.1.3375.2.1.3.4.94    # BIG-IP Vcmp Guest
-  - 1.3.6.1.4.1.3375.2.1.3.4.111   # BIG-IP
-  - 1.3.6.1.4.1.3375.2.1.3.4.113   # BIG-IP i10800
+  - 1.3.6.1.4.1.3375.2.1.2.4.*      # F5
+  - 1.3.6.1.4.1.3375.2.1.3.4.*      # F5
+  - .1.3.6.1.4.1.3375.2.1.3.4.1		  # bigip520
+  - .1.3.6.1.4.1.3375.2.1.3.4.2		  # bigip540
+  - .1.3.6.1.4.1.3375.2.1.3.4.3		  # bigip1000
+  - .1.3.6.1.4.1.3375.2.1.3.4.4	  	# bigip1500
+  - .1.3.6.1.4.1.3375.2.1.3.4.5		  # bigip2400
+  - .1.3.6.1.4.1.3375.2.1.3.4.6		  # bigip3400
+  - .1.3.6.1.4.1.3375.2.1.3.4.7		  # bigip4100
+  - .1.3.6.1.4.1.3375.2.1.3.4.8	  	# bigip5100
+  - .1.3.6.1.4.1.3375.2.1.3.4.9		  # bigip5110
+  - .1.3.6.1.4.1.3375.2.1.3.4.10		# bigip6400
+  - .1.3.6.1.4.1.3375.2.1.3.4.11		# bigip6800
+  - .1.3.6.1.4.1.3375.2.1.3.4.12		# bigip8400
+  - .1.3.6.1.4.1.3375.2.1.3.4.13		# bigip8800
+  - .1.3.6.1.4.1.3375.2.1.3.4.14		# em3000
+  - .1.3.6.1.4.1.3375.2.1.3.4.15		# wj300
+  - .1.3.6.1.4.1.3375.2.1.3.4.16		# wj400
+  - .1.3.6.1.4.1.3375.2.1.3.4.17		# wj500
+  - .1.3.6.1.4.1.3375.2.1.3.4.18		# wj800
+  - .1.3.6.1.4.1.3375.2.1.3.4.19		# bigipViprion4
+  - .1.3.6.1.4.1.3375.2.1.3.4.20		# bigip1600
+  - .1.3.6.1.4.1.3375.2.1.3.4.21		# bigip3600
+  - .1.3.6.1.4.1.3375.2.1.3.4.22		# bigip6900
+  - .1.3.6.1.4.1.3375.2.1.3.4.23		# bigip8900
+  - .1.3.6.1.4.1.3375.2.1.3.4.24		# bigip3900
+  - .1.3.6.1.4.1.3375.2.1.3.4.25		# bigip8950
+  - .1.3.6.1.4.1.3375.2.1.3.4.26		# em4000
+  - .1.3.6.1.4.1.3375.2.1.3.4.27		# bigip11050
+  - .1.3.6.1.4.1.3375.2.1.3.4.28		# em500
+  - .1.3.6.1.4.1.3375.2.1.3.4.29		# arx1000
+  - .1.3.6.1.4.1.3375.2.1.3.4.30		# arx2000
+  - .1.3.6.1.4.1.3375.2.1.3.4.31		# arx4000
+  - .1.3.6.1.4.1.3375.2.1.3.4.32		# arx500
+  - .1.3.6.1.4.1.3375.2.1.3.4.33		# bigip3410
+  - .1.3.6.1.4.1.3375.2.1.3.4.34		# bigipPb100
+  - .1.3.6.1.4.1.3375.2.1.3.4.35		# bigipPb100n
+  - .1.3.6.1.4.1.3375.2.1.3.4.36		# sam4300
+  - .1.3.6.1.4.1.3375.2.1.3.4.37		# firepass1200
+  - .1.3.6.1.4.1.3375.2.1.3.4.38		# firepass4100
+  - .1.3.6.1.4.1.3375.2.1.3.4.39		# firepass4300
+  - .1.3.6.1.4.1.3375.2.1.3.4.40		# swanWJ200
+  - .1.3.6.1.4.1.3375.2.1.3.4.41		# trafficShield4100
+  - .1.3.6.1.4.1.3375.2.1.3.4.42		# wa4500
+  - .1.3.6.1.4.1.3375.2.1.3.4.43		# bigipVirtualEdition
+  - .1.3.6.1.4.1.3375.2.1.3.4.44		# bigip11000
+  - .1.3.6.1.4.1.3375.2.1.3.4.45		# bigip11050N
+  - .1.3.6.1.4.1.3375.2.1.3.4.46		# bigipVprB2100
+  - .1.3.6.1.4.1.3375.2.1.3.4.47		# bigipVprB4300
+  - .1.3.6.1.4.1.3375.2.1.3.4.48		# bigipVprC2400
+  - .1.3.6.1.4.1.3375.2.1.3.4.49		# arx1500
+  - .1.3.6.1.4.1.3375.2.1.3.4.50		# arx2500
+  - .1.3.6.1.4.1.3375.2.1.3.4.51		# bigip11000F
+  - .1.3.6.1.4.1.3375.2.1.3.4.52		# bigip11050F
+  - .1.3.6.1.4.1.3375.2.1.3.4.53		# bigip6900F
+  - .1.3.6.1.4.1.3375.2.1.3.4.54		# bigip6900N
+  - .1.3.6.1.4.1.3375.2.1.3.4.55		# bigip6900S
+  - .1.3.6.1.4.1.3375.2.1.3.4.56		# bigip8900F
+  - .1.3.6.1.4.1.3375.2.1.3.4.57		# bigip8950S
+  - .1.3.6.1.4.1.3375.2.1.3.4.58		# bigipPb200N
+  - .1.3.6.1.4.1.3375.2.1.3.4.59		# bigip4000
+  - .1.3.6.1.4.1.3375.2.1.3.4.60		# bigip10000
+  - .1.3.6.1.4.1.3375.2.1.3.4.61		# bigip2000
+  - .1.3.6.1.4.1.3375.2.1.3.4.62		# bigip5000
+  - .1.3.6.1.4.1.3375.2.1.3.4.63		# bigip7000
+  - .1.3.6.1.4.1.3375.2.1.3.4.64		# bigip800
+  - .1.3.6.1.4.1.3375.2.1.3.4.65		# bigipVprB4300N
+  - .1.3.6.1.4.1.3375.2.1.3.4.66		# bigip10000F
+  - .1.3.6.1.4.1.3375.2.1.3.4.67		# bigip10000S
+  - .1.3.6.1.4.1.3375.2.1.3.4.68		# bigip7000F
+  - .1.3.6.1.4.1.3375.2.1.3.4.69		# bigip7000S
+  - .1.3.6.1.4.1.3375.2.1.3.4.70		# bigipVprB2250
+  - .1.3.6.1.4.1.3375.2.1.3.4.71		# bigip5050
+  - .1.3.6.1.4.1.3375.2.1.3.4.72		# bigip5250
+  - .1.3.6.1.4.1.3375.2.1.3.4.73		# bigip4050
+  - .1.3.6.1.4.1.3375.2.1.3.4.74		# bigip4250
+  - .1.3.6.1.4.1.3375.2.1.3.4.75		# bigip2050
+  - .1.3.6.1.4.1.3375.2.1.3.4.76		# bigip2250
+  - .1.3.6.1.4.1.3375.2.1.3.4.77		# bigip7050
+  - .1.3.6.1.4.1.3375.2.1.3.4.78		# bigip7250
+  - .1.3.6.1.4.1.3375.2.1.3.4.79		# bigip10050
+  - .1.3.6.1.4.1.3375.2.1.3.4.80		# bigip10250
+  - .1.3.6.1.4.1.3375.2.1.3.4.81		# bigip2200
+  - .1.3.6.1.4.1.3375.2.1.3.4.82		# bigip4200
+  - .1.3.6.1.4.1.3375.2.1.3.4.83		# bigip5200
+  - .1.3.6.1.4.1.3375.2.1.3.4.84		# bigip7200
+  - .1.3.6.1.4.1.3375.2.1.3.4.85		# bigip7200F
+  - .1.3.6.1.4.1.3375.2.1.3.4.86		# bigip7200S
+  - .1.3.6.1.4.1.3375.2.1.3.4.87		# bigip10200
+  - .1.3.6.1.4.1.3375.2.1.3.4.88		# bigip10200F
+  - .1.3.6.1.4.1.3375.2.1.3.4.89		# bigip10200S
+  - .1.3.6.1.4.1.3375.2.1.3.4.90		# bigiq7000
+  - .1.3.6.1.4.1.3375.2.1.3.4.91		# bigip5250F
+  - .1.3.6.1.4.1.3375.2.1.3.4.92		# bigip12050
+  - .1.3.6.1.4.1.3375.2.1.3.4.93		# bigip10350N
+  - .1.3.6.1.4.1.3375.2.1.3.4.94		# bigipVcmpGuest
+  - .1.3.6.1.4.1.3375.2.1.3.4.95		# bigipVprC2200
+  - .1.3.6.1.4.1.3375.2.1.3.4.96		# bigip7055
+  - .1.3.6.1.4.1.3375.2.1.3.4.97		# bigip7255
+  - .1.3.6.1.4.1.3375.2.1.3.4.98		# bigip10055
+  - .1.3.6.1.4.1.3375.2.1.3.4.99		# bigip10255
+  - .1.3.6.1.4.1.3375.2.1.3.4.100		# bigipPb200
+  - .1.3.6.1.4.1.3375.2.1.3.4.101		# bigipVprB2150
+  - .1.3.6.1.4.1.3375.2.1.3.4.102		# bigipVprB4450N
+  - .1.3.6.1.4.1.3375.2.1.3.4.103		# bigip10350
+  - .1.3.6.1.4.1.3375.2.1.3.4.104		# bigipi2600
+  - .1.3.6.1.4.1.3375.2.1.3.4.105		# bigipi2800
+  - .1.3.6.1.4.1.3375.2.1.3.4.106		# bigipi4600
+  - .1.3.6.1.4.1.3375.2.1.3.4.107		# bigipi4800
+  - .1.3.6.1.4.1.3375.2.1.3.4.108		# bigipi5600
+  - .1.3.6.1.4.1.3375.2.1.3.4.109		# bigipi5800
+  - .1.3.6.1.4.1.3375.2.1.3.4.110		# bigipi7600
+  - .1.3.6.1.4.1.3375.2.1.3.4.111		# bigipi7800
+  - .1.3.6.1.4.1.3375.2.1.3.4.112		# bigipi10600
+  - .1.3.6.1.4.1.3375.2.1.3.4.113		# bigipi10800
+  - .1.3.6.1.4.1.3375.2.1.3.4.114		# bigipi12600
+  - .1.3.6.1.4.1.3375.2.1.3.4.115		# bigipi12800
+  - .1.3.6.1.4.1.3375.2.1.3.4.116		# bigipi15600
+  - .1.3.6.1.4.1.3375.2.1.3.4.117		# bigipi15800
+  - .1.3.6.1.4.1.3375.2.1.3.4.118		# herculoni2800
+  - .1.3.6.1.4.1.3375.2.1.3.4.119		# herculoni5800
+  - .1.3.6.1.4.1.3375.2.1.3.4.120		# herculoni10800
+  - .1.3.6.1.4.1.3375.2.1.3.4.121		# bigipi11600
+  - .1.3.6.1.4.1.3375.2.1.3.4.122		# bigipi11800
+  - .1.3.6.1.4.1.3375.2.1.3.4.123		# bigipi11800-DS
+  - .1.3.6.1.4.1.3375.2.1.3.4.124		# bigipi5820-DF
+  - .1.3.6.1.4.1.3375.2.1.3.4.125		# bigipi7820-DF
+  - .1.3.6.1.4.1.3375.2.1.3.4.126		# bigipi850
+  - .1.3.6.1.4.1.3375.2.1.3.4.127		# bigipi11600-DS
+  - .1.3.6.1.4.1.3375.2.1.3.4.128		# bigipi11400-DS
+  - .1.3.6.1.4.1.3375.2.1.3.4.129		# bigipi7600-D
+  - .1.3.6.1.4.1.3375.2.1.3.4.130		# bigipi7800-D
+  - .1.3.6.1.4.1.3375.2.1.3.4.131		# bigipi15600-DN
+  - .1.3.6.1.4.1.3375.2.1.3.4.132		# bigipi15800-DN
+  - .1.3.6.1.4.1.3375.2.1.3.4.1000  # f5_unknown
+
+
+metric_tags:
+
+  # Tags that go into 'default' measurement name used for general device metadata
+  # Special parsing of the sysDescr to extract additional metadata
+  - column:
+      OID: .1.3.6.1.2.1.1.1.0
+      name: f5:description
+      # BIG-IP vCMP Guest : Linux 3.10.0-862.14.4.el7.x86_64 : BIG-IP software release 14.1.5.2, build 0.0.3
+      # BIG-IP Virtual Edition : Linux 3.10.0-862.14.4.el7.ve.x86_64 : BIG-IP software release 14.1.5.2, build 0.0.3
+      # BIG-IQ Virtual Edition : Linux 3.10.0-862.14.4.el7.ve.x86_64 : BIG-IP software release 8.1.0, build 0.0.244
+      # BIG-IP 5250 : Linux 3.10.0-862.14.4.el7.x86_64 : BIG-IP software release 14.1.4.2, build 0.0.5
+      # BIG-IP VPR-B2250 : Linux 3.10.0-862.14.4.el7.x86_64 : BIG-IP software release 14.1.5.2, build 0.0.3
+      # below is Enterprise Manager 4000, which does not fit here
+      # Linux frf5em01.geico.net 2.6.32-220.el6.f5.x86_64 #1 SMP Wed Mar 8 08:00:05 PST 2017 x86_64
+      conversion: 'regexp:(?P<sysDescr>(?P<model>.+) : .* : BIG-IP software release (?P<os_version>\S+),.*)'
+
+  # Vendor specific OIDS
+  - column:
+      OID: 1.3.6.1.4.1.3375.2.1.3.3.3.0   # name: sysGeneralChassisSerialNum
+      name: serial_number
+  - column:
+      OID: 1.3.6.1.6.3.1135.6169.F5
+      name: vendor
+  - column:
+      OID: 1.3.6.1.6.3.1135.6169.BIG-IP
+      name: os_name
+  - column:
+      OID: 1.3.6.1.6.3.1135.6169.F5 BIG-IP
+      name: product_name
+
 
 metrics:
-# System-wide metrics
-  # This is average usage ratio of CPU for the system in the last one minute
+
   - MIB: F5-BIGIP-SYSTEM-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.3375.2.1.1.2.20.29.0
-      name: sysGlobalHostCpuUsageRatio1m
-      poll_time_sec: 60
-      tag: CPU
-  # The total memory available in bytes for TMM (Traffic Management Module)
-  - MIB: F5-BIGIP-SYSTEM-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.3375.2.1.1.2.1.44.0
-      name: sysStatMemoryTotal
-      poll_time_sec: 60
-      tag: MemoryTotal
-  # The memory in use in bytes for TMM (Traffic Management Module)
-  - MIB: F5-BIGIP-SYSTEM-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.3375.2.1.1.2.1.45.0
-      name: sysStatMemoryUsed
-      poll_time_sec: 60
-      tag: MemoryUsed
-  # Chassis Serial Number
-  - MIB: F5-BIGIP-SYSTEM-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.3375.2.1.3.3.3.0
-      name: sysGeneralChassisSerialNum
-      tag: chassis_serial_number
-  # The number of bytes received by the system from server-side
-  - MIB: F5-BIGIP-SYSTEM-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.3375.2.1.1.2.1.10.0
-      name: sysStatServerBytesIn
-      tag: server_side_bytes_in
-  # The number of bytes sent to server-side from the system
-  - MIB: F5-BIGIP-SYSTEM-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.3375.2.1.1.2.1.12.0
-      name: sysStatServerBytesOut
-      tag: server_side_bytes_out
-  # The number of bytes received by the system from client-side
-  - MIB: F5-BIGIP-SYSTEM-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.3375.2.1.1.2.1.3.0
-      name: sysStatClientBytesIn
-      tag: client_side_bytes_in
-  # The number of bytes sent to client-side from the system
-  - MIB: F5-BIGIP-SYSTEM-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.3375.2.1.1.2.1.5.0
-      name: sysStatClientBytesOut
-      tag: client_side_bytes_out
-  # The total connections from client-side to the system
-  - MIB: F5-BIGIP-SYSTEM-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.3375.2.1.1.2.1.7.0
-      name: sysStatClientTotConns
-      tag: client_side_total_connections
-  # The current connections from client-side to the system
-  - MIB: F5-BIGIP-SYSTEM-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.3375.2.1.1.2.1.8.0
-      name: sysStatClientCurConns
-      tag: client_side_current_connections
-  # The current number of concurrent native connections with established SSL sessions being maintained by the filter
-  - MIB: F5-BIGIP-SYSTEM-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.3375.2.1.1.2.9.4.0
-      name: sysClientsslStatCurNativeConns
-      tag: current_native_connections
-  # The current number of concurrent COMPAT connections with established SSL sessions being maintained by the filter
-  - MIB: F5-BIGIP-SYSTEM-MIB
-    symbol:
-      OID: 1.3.6.1.4.1.3375.2.1.1.2.9.7.0
-      name: sysClientsslStatCurCompatConns
-      tag: current_compat_connections
+    table:
+      OID: .1.3.6.1.4.1.3375.2.1.1.2.1
+      name: sysGlobalStat
+    symbols:
+      # The number of bytes received by the system from server-side
+      - OID: 1.3.6.1.4.1.3375.2.1.1.2.1.10.0
+        name: sysStatServerBytesIn
+        tag: server_side_bytes_in
+
+      # The number of bytes sent to server-side from the system
+      - OID: 1.3.6.1.4.1.3375.2.1.1.2.1.12.0
+        name: sysStatServerBytesOut
+        tag: server_side_bytes_out
+
+      # The number of bytes received by the system from client-side
+      - OID: 1.3.6.1.4.1.3375.2.1.1.2.1.3.0
+        name: sysStatClientBytesIn
+        tag: client_side_bytes_in
+
+      # The number of bytes sent to client-side from the system
+      - OID: 1.3.6.1.4.1.3375.2.1.1.2.1.5.0
+        name: sysStatClientBytesOut
+        tag: client_side_bytes_out
+
+      # The total connections from client-side to the system
+      - OID: 1.3.6.1.4.1.3375.2.1.1.2.1.7.0
+        name: sysStatClientTotConns
+        tag: client_side_total_connections
+
+      # The current connections from client-side to the system
+      - OID: 1.3.6.1.4.1.3375.2.1.1.2.1.8.0
+        name: sysStatClientCurConns
+        tag: client_side_current_connections
+
+      # The current number of concurrent native connections with established SSL sessions being maintained by the filter
+      - OID: 1.3.6.1.4.1.3375.2.1.1.2.9.4.0
+        name: sysClientsslStatCurNativeConns
+        tag: current_native_connections
+
+      # The current number of concurrent COMPAT connections with established SSL sessions being maintained by the filter
+      - OID: 1.3.6.1.4.1.3375.2.1.1.2.9.7.0
+        name: sysClientsslStatCurCompatConns
+        tag: current_compat_connections
+
 
 # Node metrics
   - MIB: F5-BIGIP-LOCAL-MIB
@@ -103,7 +236,7 @@ metrics:
       # The availability of the specified node address
       - OID: 1.3.6.1.4.1.3375.2.2.4.3.2.1.3
         name: ltmNodeAddrStatusAvailState
-        tag: node_address_availability
+        tag: node_address:availability
         enum:
           error: 0
           available: 1
@@ -114,7 +247,7 @@ metrics:
       # The activity status of the specified node address, as specified by the user
       - OID: 1.3.6.1.4.1.3375.2.2.4.3.2.1.4
         name: ltmNodeAddrStatusEnabledState
-        tag: node_address_enabled
+        tag: node_address:enabled
         enum:
           none: 0
           enabled: 1
@@ -125,12 +258,13 @@ metrics:
       - column:
           OID: 1.3.6.1.4.1.3375.2.2.4.3.2.1.7
           name: ltmNodeAddrName
-        tag: node_name
+        tag: node_address:node_name
       # The IP address of a node
       - column:
           OID: 1.3.6.1.4.1.3375.2.2.4.3.2.1.2
           name: ltmNodeAddrAddr
-        tag: node_address
+        tag: node_address:node_address
+
 
 # Pool metrics
   - MIB: F5-BIGIP-LOCAL-MIB
@@ -141,7 +275,7 @@ metrics:
       # The availability of the specified pool indicated
       - OID: 1.3.6.1.4.1.3375.2.2.5.5.2.1.2
         name: ltmPoolStatusAvailState
-        tag: pool_availability
+        tag: pool:availability
         enum:
           error: 0
           available: 1
@@ -152,7 +286,7 @@ metrics:
       # The activity status of the specified pool, as specified by the user
       - OID: 1.3.6.1.4.1.3375.2.2.5.5.2.1.3
         name: ltmPoolStatusEnabledState
-        tag: pool_enabled
+        tag: pool:enabled
         enum:
           none: 0
           enabled: 1
@@ -163,7 +297,7 @@ metrics:
       - column:
           OID: 1.3.6.1.4.1.3375.2.2.5.5.2.1.1
           name: ltmPoolStatusName
-        tag: pool_name
+        tag: pool:pool_name
       # The load balance method for this pool
       - column:
           OID: 1.3.6.1.4.1.3375.2.2.5.1.2.1.2
@@ -187,7 +321,8 @@ metrics:
             weightedLeastConnMember: 15
             weightedLeastConnNodeAddr: 16
             ratioSession: 17
-        tag: pool_lb_mode
+        tag: pool:pool_lb_mode
+
 
 # Pool Member metrics
   - MIB: F5-BIGIP-LOCAL-MIB
@@ -198,7 +333,7 @@ metrics:
       # The availability of the specified pool member indicated
       - OID: 1.3.6.1.4.1.3375.2.2.5.6.2.1.5
         name: ltmPoolMbrStatusAvailState
-        tag: pool_mbr_availability
+        tag: pool_mbr:availability
         enum:
           error: 0
           available: 1
@@ -209,7 +344,7 @@ metrics:
       # The activity status of the specified pool member, as specified by the user
       - OID: 1.3.6.1.4.1.3375.2.2.5.6.2.1.6
         name: ltmPoolMbrStatusEnabledState
-        tag: pool_mbr_enabled
+        tag: pool_mbr:enabled
         enum:
           none: 0
           enabled: 1
@@ -218,30 +353,32 @@ metrics:
       # The detail description of the specified pool member's status
       - OID: 1.3.6.1.4.1.3375.2.2.5.6.2.1.8
         name: ltmPoolMbrStatusDetailReason
-        tag: pool_mbr_status_detail
+        tag: pool_mbr:status_detail
         conversion: to_one
+
     metric_tags:
       # The name of a pool
       - column:
           OID: 1.3.6.1.4.1.3375.2.2.5.6.2.1.1
           name: ltmPoolMbrStatusPoolName
-        tag: pool_name
+        tag: pool_mbr:pool_name
       # The IP address of a pool member in the specified pool
       - column:
           OID: 1.3.6.1.4.1.3375.2.2.5.6.2.1.3
           name: ltmPoolMbrStatusAddr
           conversion: hextoip
-        tag: pool_mbr_address
+        tag: pool_mbr:node_address
       # The port number of the specified pool member
       - column:
           OID: 1.3.6.1.4.1.3375.2.2.5.6.2.1.4
           name: ltmPoolMbrStatusPort
-        tag: pool_mbr_port
+        tag: pool_mbr:port
       # The name of associated node
       - column:
           OID: 1.3.6.1.4.1.3375.2.2.5.6.2.1.9
           name: ltmPoolMbrStatusNodeName
-        tag: pool_node_name
+        tag: pool_mbr:node_name
+
 
 # Virtual Server metrics
   - MIB: F5-BIGIP-LOCAL-MIB
@@ -252,7 +389,7 @@ metrics:
       # The availability of the specified virtual server indicated
       - OID: 1.3.6.1.4.1.3375.2.2.10.13.2.1.2
         name: ltmVsStatusAvailState
-        tag: vs_availability
+        tag: vs:availability
         enum:
           error: 0
           available: 1
@@ -263,7 +400,7 @@ metrics:
       # The activity status of the specified virtual server, as specified by the user
       - OID: 1.3.6.1.4.1.3375.2.2.10.13.2.1.3
         name: ltmVsStatusEnabledState
-        tag: vs_enabled
+        tag: vs:enabled
         enum:
           none: 0
           enabled: 1
@@ -274,14 +411,14 @@ metrics:
       - column:
           OID: 1.3.6.1.4.1.3375.2.2.10.13.2.1.1
           name: ltmVsStatusName
-        tag: vs_name
+        tag: vs:name
       # The IP address of the specified virtual server
       - column:
           OID: 1.3.6.1.4.1.3375.2.2.10.1.2.1.3
           name: ltmVirtualServAddr
-        tag: vs_address
+        tag: vs:address
       # The port number of the specified virtual server
       - column:
           OID: 1.3.6.1.4.1.3375.2.2.10.1.2.1.6
           name: ltmVirtualServPort
-        tag: vs_port
+        tag: vs:port
