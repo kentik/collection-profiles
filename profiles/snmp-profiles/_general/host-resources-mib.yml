@@ -29,6 +29,14 @@ metrics:
         name: hrStorageSize
       - OID: 1.3.6.1.2.1.25.2.3.1.6
         name: hrStorageUsed
+        script: |
+          def main(n):
+            n["size"] = int(n["hrStorageSize"]) * int(n["hrStorageAllocationUnits"])
+            n["used"] = int(n["hrStorageUsed"]) * int(n["hrStorageAllocationUnits"])
+            n["free"] = n["size"] - n["used"]
+            n["utilization"] = int(float(100) * float(n["used"]) / float(n["size"]))
+            return None
+
       - OID: 1.3.6.1.2.1.25.2.3.1.7
         name: hrStorageAllocationFailures
     metric_tags:
@@ -40,17 +48,44 @@ metrics:
         column:
           OID: 1.3.6.1.2.1.25.2.3.1.2
           name: hrStorageType
-          enum: 
-            Other: 1
-            Ram: 2
-            VirtualMemory: 3
-            FixedDisk: 4
-            RemovableDisk: 5
-            FloppyDisk: 6
-            CompactDisc: 7
-            RamDisk: 8
-            FlashMemory: 9
-            NetworkDisk: 10
+          script: |
+            def main(n):
+              type_list = n["hrStorageType"].split(".")
+              type = int(type_list[-1])
+              if type == 1:
+                n["hrStorageType"] = "Other"
+              elif type == 2:
+                n["hrStorageType"] = "Ram"
+              elif type == 3:
+                n["hrStorageType"] = "VirtualMemory"
+              elif type == 4:
+                n["hrStorageType"] = "FixedDisk"
+              elif type == 5:
+                n["hrStorageType"] = "RemovableDisk"
+              elif type == 6:
+                n["hrStorageType"] = "FloppyDisk"
+              elif type == 7:
+                n["hrStorageType"] = "CompactDisc"
+              elif type == 8:
+                n["hrStorageType"] = "RamDisk"
+              elif type == 9:
+                n["hrStorageType"] = "FlashMemory"
+              elif type == 10:
+                n["hrStorageType"] = "NetworkDisk"
+              else:
+                n["hrStorageType"] = "UnknownType"
+              return None
+        # enum:
+        # Other: 1
+        # Ram: 2
+        # VirtualMemory: 3
+        # FixedDisk: 4
+        # RemovableDisk: 5
+        # FloppyDisk: 6
+        # CompactDisc: 7
+        # RamDisk: 8
+        # FlashMemory: 9
+        # NetworkDisk: 10
 
 # hrProcessorTable is used in the oc-system-cpu_hrProcessorTable.yml
   # - MIB: HOST-RESOURCES-MIB
