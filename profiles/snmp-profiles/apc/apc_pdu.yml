@@ -2,136 +2,263 @@
 ---
 extends:
   - system-mib.yml
+  - oc-system-uptime
 
-provider: kentik-pdu
+provider: APC PDU
 
 sysobjectid: 1.3.6.1.4.1.318.1.3.4.*
 
+
+metric_tags:
+
+  # Tags that go into 'default' measurement name used for general device metadata
+  # Special parsing of the sysDescr to extract additional metadata
+  - column:
+      OID: .1.3.6.1.2.1.1.1.0
+      name: apc:sysDescr
+      # APC Web/SNMP Management Card (MB:v4.1.0 PF:v6.4.0 PN:apc_hw05_aos_640.bin AF1:v6.4.0 AN1:apc_hw05_rpdu2g_640.bin MN:AP8941 HR:02 SN: 5A1604E03839 MD:01/28/2016)
+      # APC Web/SNMP Management Card (MB:v4.1.0 PF:v6.4.6 PN:apc_hw05_aos_646.bin AF1:v6.4.6 AN1:apc_hw05_rpdu2g_646.bin MN:AP8941 HR:2589 SN: 5A1721E09871 MD:05/27/2017)
+      # conversion: ''
+
+  # Recognized metadata
+  - column:
+      OID: .1.3.6.1.4.1.318.1.1.12.1.6.0
+      name: serial_number
+  - column:
+      OID: .1.3.6.1.4.1.318.1.1.12.1.5.0
+      name: model
+  - column:
+      OID: .1.3.6.1.4.1.318.1.1.12.1.3.0
+      name: os_version
+  - column:
+      OID: 1.3.6.1.6.3.1135.6169.APC
+      name: vendor
+  - column:
+      OID: 1.3.6.1.6.3.1135.6169.APC AOS
+      name: os_name
+  - column:
+      OID: 1.3.6.1.6.3.1135.6169.APC PDU
+      name: product_name
+
+
+  # Variable Metadata - KVs
+  - column:
+      OID: 1.3.6.1.4.1.318.1.1.12.1.2.0
+      name: rPDUIdentHardwareRev
+    tag: kvs.hardware_revision
+  - column:
+      OID: 1.3.6.1.4.1.318.1.1.12.1.7.0
+      name: rPDUIdentDeviceRating
+    tag: kvs.amps_rating
+  - column:
+      OID: 1.3.6.1.4.1.318.1.1.12.1.8.0
+      name: rPDUIdentDeviceNumOutlets
+    tag: kvs.outlets
+  - column:
+      OID: 1.3.6.1.4.1.318.1.1.12.1.9.0
+      name: rPDUIdentDeviceNumPhases
+    tag: kvs.phases
+  - column:
+      OID: 1.3.6.1.4.1.318.1.1.12.1.10.0
+      name: rPDUIdentDeviceNumBreakers
+    tag: kvs.breakers
+  - column:
+      OID: 1.3.6.1.4.1.318.1.1.12.1.11.0
+      name: rPDUIdentDeviceBreakerRating
+    tag: kvs.breaker_rating
+
+
+
+
 metrics:
-  - MIB: PowerNet-MIB_PDU
+
+
+  - MIB: PowerNet-MIB
     table:
-      OID: 1.3.6.1.4.1.318.1.1.12.2.3.1
-      name: rPDULoadStatusTable
+      OID: 1.3.6.1.4.1.318.1.1.12
+      name: "PDU"
     symbols:
+
+      - tag: apc_pdu:line_to_line_voltage
+        OID: 1.3.6.1.4.1.318.1.1.12.1.15.0
+        name: rPDUIdentDeviceLinetoLineVoltage
+      
+      - tag: apc_pdu:power_watts
+        OID: 1.3.6.1.4.1.318.1.1.12.1.16.0
+        name: rPDUIdentDevicePowerWatts
+      
+      - tag: apc_pdu:power_va
+        OID: 1.3.6.1.4.1.318.1.1.12.1.18.0
+        name: rPDUIdentDevicePowerVA
+
+      - tag: apc_pdu:line_to_neutral_voltage
+        OID: 1.3.6.1.4.1.318.1.1.12.1.19.0
+        name: rPDUIdentDeviceLinetoNeutralVoltage
+
+
+      # Getting this OID will return the phase/bank load measured in tenths of Amps.
       - OID: 1.3.6.1.4.1.318.1.1.12.2.3.1.1.2
-        name: rPDULoadStatusLoad
+        name: rPDULoadStatusLoad:load
       - OID: 1.3.6.1.4.1.318.1.1.12.2.3.1.1.3
-        name: rPDULoadStatusLoadState
+        name: rPDULoadStatusLoadState:state
         enum:
           phaseLoadNormal: 1
           phaseLoadLow: 2
           phaseLoadNearOverload: 3
           phaseLoadOverload: 4
     metric_tags:
-      - tag: load_index
+      - tag: rPDULoadStatusTable:phase
         column:
-          OID: 1.3.6.1.4.1.318.1.1.12.2.3.1.1.1
-          name: rPDULoadStatusIndex
-  - MIB: PowerNet-MIB_PDU
+          OID: 1.3.6.1.4.1.318.1.1.12.2.3.1.1.4
+          name: rPDULoadStatusPhaseNumber
+      - tag: rPDULoadStatusTable:bank
+        column:
+          OID: 1.3.6.1.4.1.318.1.1.12.2.3.1.1.5
+          name: rPDULoadStatusBankNumber
+
+
+  - MIB: PowerNet-MIB
+    table:
+      OID: 1.3.6.1.4.1.318.1.1.12.2.3.1
+      name: rPDULoadStatusTable
+    symbols:
+      # Getting this OID will return the phase/bank load measured in tenths of Amps.
+      - OID: 1.3.6.1.4.1.318.1.1.12.2.3.1.1.2
+        name: rPDULoadStatusLoad:load
+      - OID: 1.3.6.1.4.1.318.1.1.12.2.3.1.1.3
+        name: rPDULoadStatusLoadState:state
+        enum:
+          phaseLoadNormal: 1
+          phaseLoadLow: 2
+          phaseLoadNearOverload: 3
+          phaseLoadOverload: 4
+    metric_tags:
+      - tag: rPDULoadStatusTable:phase
+        column:
+          OID: 1.3.6.1.4.1.318.1.1.12.2.3.1.1.4
+          name: rPDULoadStatusPhaseNumber
+      - tag: rPDULoadStatusTable:bank
+        column:
+          OID: 1.3.6.1.4.1.318.1.1.12.2.3.1.1.5
+          name: rPDULoadStatusBankNumber
+
+
+  - MIB: PowerNet-MIB
     table:
       OID: 1.3.6.1.4.1.318.1.1.12.3.5.1
       name: rPDUOutletStatusTable
     symbols:
       - OID: 1.3.6.1.4.1.318.1.1.12.3.5.1.1.4
-        name: rPDUOutletStatusOutletState
+        name: rPDUOutletStatusOutletState:state
         enum:
           outletStatusOn: 1
           outletStatusOff: 0
+      # Getting this OID will return the measured Outlet load for an Outlet Monitored Rack PDU in tenths of Amps.
       - OID: 1.3.6.1.4.1.318.1.1.12.3.5.1.1.7
-        name: rPDUOutletStatusLoad
+        name: rPDUOutletStatusLoad:load
     metric_tags:
-      - tag: outlet_index
-        column:
-          OID: 1.3.6.1.4.1.318.1.1.12.3.5.1.1.1
-          name: rPDUOutletStatusIndex
-      - tag: outlet_name
+      - tag: rPDUOutletStatusOutletName:name
         column:
           OID: 1.3.6.1.4.1.318.1.1.12.3.5.1.1.2
           name: rPDUOutletStatusOutletName
-  - MIB: PowerNet-MIB_PDU
-    symbol:
-      OID: 1.3.6.1.4.1.318.1.1.12.4.1.1.0
+      - tag: rPDUOutletStatusOutletPhase:phase
+        column:
+          OID: 1.3.6.1.4.1.318.1.1.12.3.5.1.1.3
+          name: rPDUOutletStatusOutletPhase
+          enum: 
+            phase1: 1
+            phase2: 2
+            phase3: 3
+            phase1-2: 4
+            phase2-3: 5
+            phase3-1: 6
+      - tag: rPDUOutletStatusOutletBank:bank
+        column:
+          OID: 1.3.6.1.4.1.318.1.1.12.3.5.1.1.6
+          name: rPDUOutletStatusOutletBank
+
+
+  - MIB: PowerNet-MIB
+    table:
+      OID: 1.3.6.1.4.1.318.1.1.12.4
+      name: rPDUPowerSupply
+    symbols:
+
+    - OID: 1.3.6.1.4.1.318.1.1.12.4.1.1.0
       name: rPDUPowerSupply1Status
       enum:
         powerSupplyOneOk: 1
         powerSupplyOneFailed: 2
-  - MIB: PowerNet-MIB_PDU
-    symbol:
-      OID: 1.3.6.1.4.1.318.1.1.12.4.1.2.0
+
+    - OID: 1.3.6.1.4.1.318.1.1.12.4.1.2.0
       name: rPDUPowerSupply2Status
       enum:
         powerSupplyTwoOk: 1
         powerSupplyTwoFailed: 2
         powerSupplyTwoNotPresent: 3
-  - MIB: PowerNet-MIB_PDU
-    symbol:
-      OID: 1.3.6.1.4.1.318.1.1.12.4.1.3.0
+
+    - OID: 1.3.6.1.4.1.318.1.1.12.4.1.3.0
       name: rPDUPowerSupplyAlarm
-  - MIB: PowerNet-MIB_PDU
+
+
+  - MIB: PowerNet-MIB
     table:
       OID: 1.3.6.1.4.1.318.1.1.12.5.2
       name: rPDUStatusBankTable
     symbols:
       - OID: 1.3.6.1.4.1.318.1.1.12.5.2.1.3
-        name: rPDUStatusBankState
+        name: rPDUStatusBankState:state
         enum:
           bankLoadNormal: 1
           bankLoadLow: 2
           bankLoadNearOverload: 3
           bankLoadOverload: 4
     metric_tags:
-      - tag: bank_index
-        column:
-          OID: 1.3.6.1.4.1.318.1.1.12.5.2.1.1
-          name: rPDUStatusBankIndex
-      - tag: bank_number
+      - tag: rPDUStatusBankTable:bank
         column:
           OID: 1.3.6.1.4.1.318.1.1.12.5.2.1.2
           name: rPDUStatusBankNumber
-  - MIB: PowerNet-MIB_PDU
+
+
+  - MIB: PowerNet-MIB
     table:
       OID: 1.3.6.1.4.1.318.1.1.12.5.4
       name: rPDUStatusPhaseTable
     symbols:
       - OID: 1.3.6.1.4.1.318.1.1.12.5.4.1.3
-        name: rPDUStatusPhaseState
+        name: rPDUStatusPhaseState:state
         enum:
           phaseLoadNormal: 1
           phaseLoadLow: 2
           phaseLoadNearOverload: 3
           phaseLoadOverload: 4
     metric_tags:
-      - tag: phase_index
-        column:
-          OID: 1.3.6.1.4.1.318.1.1.12.5.4.1.1
-          name: rPDUStatusPhaseIndex
-      - tag: phase_number
+      - tag: rPDUStatusPhaseTable:phase
         column:
           OID: 1.3.6.1.4.1.318.1.1.12.5.4.1.2
           name: rPDUStatusPhaseNumber
-  - MIB: PowerNet-MIB_PDU
+
+
+  - MIB: PowerNet-MIB
     table:
       OID: 1.3.6.1.4.1.318.1.1.12.5.6
       name: rPDUStatusOutletTable
     symbols:
       - OID: 1.3.6.1.4.1.318.1.1.12.5.6.1.3
-        name: rPDUStatusOutletState
+        name: rPDUStatusOutletState:state
         enum:
           outletLoadNormal: 1
           outletLoadLow: 2
           outletLoadNearOverload: 3
           outletLoadOverload: 4
     metric_tags:
-      - tag: outlet_status_index
-        column:
-          OID: 1.3.6.1.4.1.318.1.1.12.5.6.1.1
-          name: rPDUStatusOutletIndex
-      - tag: outlet_status_name
+      - tag: rPDUStatusOutletNumber:outlet
         column:
           OID: 1.3.6.1.4.1.318.1.1.12.5.6.1.2
           name: rPDUStatusOutletNumber
 
-  - MIB: PowerNet-MIB_PDU
+
+  - MIB: PowerNet-MIB
     table:
       OID: 1.3.6.1.4.1.318.1.1.26.10.2.2
       name: rPDU2SensorTempHumidityStatusTable
@@ -161,11 +288,11 @@ metrics:
           aboveHigh: 5
           aboveMax: 6
     metric_tags:
-      - tag: humidity_sensor_name
+      - tag: rPDU2SensorTempHumidityStatusTable:sensor_name
         column:
           OID: 1.3.6.1.4.1.318.1.1.26.10.2.2.1.3
           name: rPDU2SensorTempHumidityStatusName
-      - tag: humidity_sensor_type
+      - tag: rPDU2SensorTempHumidityStatusTable:sensor_type
         column:
           OID: 1.3.6.1.4.1.318.1.1.26.10.2.2.1.5
           name: rPDU2SensorTempHumidityStatusType
@@ -174,61 +301,3 @@ metrics:
             temperatureHumidity: 2
             commsLost: 3
             notInstalled: 4
-          
-metric_tags:
-  - column:
-      OID: 1.3.6.1.4.1.318.1.1.12.1.1.0
-      name: rPDUIdentName
-    tag: pdu_name
-  - column:
-      OID: 1.3.6.1.4.1.318.1.1.12.1.2.0
-      name: rPDUIdentHardwareRev
-    tag: hardware_revision
-  - column:
-      OID: 1.3.6.1.4.1.318.1.1.12.1.3.0
-      name: rPDUIdentFirmwareRev
-    tag: firmware_revision
-  - column:
-      OID: 1.3.6.1.4.1.318.1.1.12.1.5.0
-      name: rPDUIdentModelNumber
-    tag: model_number
-  - column:
-      OID: 1.3.6.1.4.1.318.1.1.12.1.6.0
-      name: rPDUIdentSerialNumber
-    tag: serial_number
-  - column:
-      OID: 1.3.6.1.4.1.318.1.1.12.1.7.0
-      name: rPDUIdentDeviceRating
-    tag: amps_rating
-  - column:
-      OID: 1.3.6.1.4.1.318.1.1.12.1.8.0
-      name: rPDUIdentDeviceNumOutlets
-    tag: number_of_outlets
-  - column:
-      OID: 1.3.6.1.4.1.318.1.1.12.1.9.0
-      name: rPDUIdentDeviceNumPhases
-    tag: number_of_phases
-  - column:
-      OID: 1.3.6.1.4.1.318.1.1.12.1.10.0
-      name: rPDUIdentDeviceNumBreakers
-    tag: number_of_breakers
-  - column:
-      OID: 1.3.6.1.4.1.318.1.1.12.1.11.0
-      name: rPDUIdentDeviceBreakerRating
-    tag: breaker_rating
-  - column:
-      OID: 1.3.6.1.4.1.318.1.1.12.1.15.0
-      name: rPDUIdentDeviceLinetoLineVoltage
-    tag: line_line_voltage
-  - column:
-      OID: 1.3.6.1.4.1.318.1.1.12.1.16.0
-      name: rPDUIdentDevicePowerWatts
-    tag: power_watts
-  - column:
-      OID: 1.3.6.1.4.1.318.1.1.12.1.18.0
-      name: rPDUIdentDevicePowerVA
-    tag: power_in_va
-  - column:
-      OID: 1.3.6.1.4.1.318.1.1.12.1.19.0
-      name: rPDUIdentDeviceLinetoNeutralVoltage
-    tag: line_neutral_voltage
