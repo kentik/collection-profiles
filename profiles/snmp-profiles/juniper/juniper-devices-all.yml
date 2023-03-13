@@ -18,8 +18,8 @@
 ---
 extends:
   # Generic MIB2 profiles
-  #- if-mib.yml
-  - oc-interfaces_ifTable.yml
+  - if-mib.yml
+  #- oc-interfaces_ifTable.yml
   - system-mib.yml
 
   # Normalized from standard MIBs to Kentik OC data models
